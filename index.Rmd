@@ -1,0 +1,52 @@
+---
+title: "Georgia E. Smits"
+output:
+  html_document
+---
+
+![](georgia_photo.jpg){style="width:40%; height:auto;"}
+
+Hello! I am a fifth-year PhD Candidate in Statistics in the Department of Statistics and Data Science at Cornell University, advised by Professor [David S. Matteson](https://stat.cornell.edu/people/faculty/david-s-matteson), and with incredible mentorship from my committee members Professor [Sumanta Basu](https://stat.cornell.edu/people/faculty/sumanta-basu) and Professor [Martin T. Wells](https://stat.cornell.edu/people/faculty/martin-wells). My work focuses on developing Bayesian and machine learning methods for complex, noisy time series data.
+
+<br>
+
+## Education
+- (In progress) **PhD** in Statistics, Cornell University
+- **MS** in Statistics, Cornell University
+- **BS** in Physics (Intensive), Yale University
+
+<br>
+
+## Research Interests
+
+#### Time Series
+- Changepoint detection
+- Bayesian trend filtering
+- Stochastic processes
+- Time series classification
+
+#### Machine Learning
+- Algorithmic bias reduction
+- Synthetic data generation
+- Model compression techniques
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+If you like this website, credits go to [Andreas Handel](https://www.andreashandel.com/posts/2021-01-11-simple-github-website/) for the wonderful template!
+

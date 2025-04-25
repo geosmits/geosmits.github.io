@@ -1,0 +1,27 @@
+name: "georgias-website"
+output_dir: "docs"
+output:
+  html_document:
+      theme: cerulean
+      highlight: null
+      toc: false
+navbar:
+  title: "Home"
+  # left:
+  #   - text: "About Me"
+  #     href: ./aboutme.html
+  #   - text: "Research"
+  #     href: ./research.html
+  #   - text: "Teaching"
+  #     href: ./teaching.html
+  right:
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/georgia-smits/
+    - icon: fa-graduation-cap fa-lg
+      href: https://scholar.google.com/citations?user=6cfoWg0AAAAJ
+    - icon: fa-envelope fa-lg
+      href: mailto:ges256@cornell.edu
+    - icon: fa-github fa-lg
+      href: https://github.com/geosmits/
+
+
