@@ -1,0 +1,48 @@
+---
+title: "&#32;"
+output:
+  html_document
+---
+
+## Publications
+
+**In submission:** G. E. Smits, G. Deng, and D. S. Matteson, “Enhancing Predictive Balance: Generative Models for Unbiased Data Augmentation,” 2025.
+
+**Journal article:** L. M. Wass, D. O. Hoare, G. E. Smits, et al., “Syndromic surveillance tracks COVID-19 cases in university and county settings: Retrospective observational study,” JMIR Public Health and Surveillance, vol. 10, e54551, Jun. 2024. doi: 10.2196/54551.
+
+**Journal article:** O. O. Owolabi, T. L. J. Schafer, G. E. Smits, et al., “Role of variable renewable energy penetration on electricity price and its volatility across independent system operators in the United States,” Data Science in Science, vol. 2, no. 1, Feb. 2023. doi: 10.1080/26941899.2022.2158145.
+
+## Conferences and Proceedings
+
+**Contributed talk:** G. E. Smits and D. S. Matteson, “Data depth for holistic Bayesian changepoint analysis,” Joint Statistical Meetings, Aug. 2024.
+
+**Poster presentation:** “Data depth for holistic bayesian changepoint analysis,” Cornell Celebration of Statistics and Data Science, Sep. 2024.
+
+**Poster presentation:** “Generative models for fair and balanced datasets,” Cornell Celebration of Statistics and Data Science, Sep. 2023.
+
+**Poster presentation:** “Generative models for fair and balanced datasets,” Conference on Advances in Time Series Analysis, May 2023.
+
+**Conference proceedings:** G. E. Smits, R. Sen, and S. Basu, “Network analysis of contagion between large number of financial entities,” JSM Proceedings, Business and Economic Statistics Section, pp. 269–274, Aug. 2022, Alexandria, VA: American Statistical Association.
+
+**Poster presentation:** “Role of variable renewable energy penetration on electricity price and its volatility across independent system operators in the United States,” Knowledge Discovery and Data Mining Conference, Aug. 2021.
+
+## Other projects
+
+**Internship project:** Developed methodologies for acoustic scene classification.
+
+**Internship project:** Implemented knowledge distillation-based techniques in PyTorch to compress large CNNs, achieving comparable results on speech data with 10-times compression. Used knowledge distillation as a regularization technique to improve original neural network performance.
+
+**Internship project:** Developed mixture model-based methods for multi-authorship detection and authorship changepoint detection of text embedded using BERT-based natural language processing models.
+
+
+<!-- ### Methodology -->
+<!-- #### Functional Bayesian Trend Filtering -->
+<!-- #### Changepoint Selection with Data Depth -->
+<!-- #### Mitigating Algorithmic Bias in Machine Learning Models -->
+
+<!-- ### Applications -->
+<!-- #### Public Health -->
+<!-- #### Finance -->
+<!-- #### Energy Policy and Economics -->
+<!-- #### Acoustic Scene Matching -->
+<!-- #### Authorship Changepoint Detection -->
