@@ -20,7 +20,7 @@ output:
 ::: {.column width="50%"}
 ## About Me
 
-I am currently a postdoctoral researcher researching anomaly detection under Tyler H. McCormick in the Department of Statistics at the University of Washington.
+I am currently a postdoctoral scholar researching anomaly detection under Tyler H. McCormick in the Department of Statistics at the University of Washington.
 
 I received my PhD in Statistics from Cornell University in December of 2025. I was advised by Professor [David S. Matteson](https://stat.cornell.edu/people/faculty/david-s-matteson) with additional mentorship from my committee members Professor [Sumanta Basu](https://stat.cornell.edu/people/faculty/sumanta-basu) and Professor [Martin T. Wells](https://stat.cornell.edu/people/faculty/martin-wells). My work focused on developing Bayesian and machine learning methods for complex, noisy time series data.
 
