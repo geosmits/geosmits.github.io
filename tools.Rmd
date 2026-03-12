@@ -4,7 +4,7 @@ output:
   html_document
 ---
 
-Some fun and useful interactive math tools, brought to you by Drs. [Smits](https://stat.uw.edu/people/georgia-smits/ "Georgia Smits, University of Washington") and [Smits](https://math.ua.edu/people/robert-smits/ "Robert Smits, University of Alabama"), and converted into pretty HTML pages with the help of Claude AI.
+Some fun and useful interactive math tools, brought to you by Drs. [Smits](https://stat.uw.edu/people/georgia-smits/) and [Smits](https://math.ua.edu/people/robert-smits/), and converted into pretty HTML pages with help from Claude AI.
 
 <br>
 
