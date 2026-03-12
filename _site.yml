@@ -10,6 +10,8 @@ navbar:
   left:
     - text: "Research"
       href: ./research.html
+    - text: "Interactive Math Tools"
+      href: ./tools.html
   #   - text: "Teaching"
   #     href: ./teaching.html
   right:
