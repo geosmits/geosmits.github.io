@@ -49,4 +49,5 @@ I received my PhD in Statistics from Cornell University in December of 2025. I w
 ::: {style="text-align: center;"}
 *If you like this website, credits go to [Andreas Handel](https://www.andreashandel.com/posts/2021-01-11-simple-github-website/) for the wonderful template!*
 :::
+<!-- setwd("C:/Users/georg/Documents/geosmits.github.io") -->
 <!-- rmarkdown::render_site() -->
