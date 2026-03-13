@@ -10,7 +10,7 @@ navbar:
   left:
     - text: "Research"
       href: ./research.html
-    - text: "Interactive Math Tools"
+    - text: "Interactive Data Science Tools"
       href: ./tools.html
   #   - text: "Teaching"
   #     href: ./teaching.html

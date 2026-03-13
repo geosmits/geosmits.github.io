@@ -1,5 +1,5 @@
 ---
-title: "Interactive Math Tools"
+title: "Interactive Data Science Tools"
 output:
   html_document
 ---
