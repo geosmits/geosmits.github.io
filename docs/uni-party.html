@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Uni Party</title>
+<style>
+
+:root {
+  --primary:#F97316; --primary-d:#C2440A; --primary-soft:#FFEDD5;
+  --lime:#84cc16; --lime-soft:#DCFCE7;
+  --rose:#f43f5e; --rose-soft:#FEE2E2;
+  --violet:#8b5cf6; --violet-soft:#EDE9FE;
+  --sky-soft:#E0F2FE; --sky:#0369A1;
+  --bg:#EFF5F9; --surface:#FFFFFF; --surface-alt:#FFF4E6;
+  --border:#D9E4EC; --text:#0D1F35; --text2:#3F556B; --text3:#6E819A;
+  --r:16px; --rs:10px; --rl:24px; --rxl:32px;
+}
+body.dark {
+  --bg:#061224; --surface:#0C1E36; --surface-alt:#142A47;
+  --border:#1E3A5F; --text:#EAF2FF; --text2:#A9C4E0; --text3:#6B87A8;
+  --primary:#EA580C; --primary-d:#FDBA74; --primary-soft:#1E3A5F;
+  --lime-soft:#134E3A; --rose-soft:#7F1D1D; --violet-soft:#2E1065; --sky-soft:#0C4A6E;
+}
+body.dark .nav-bar{background:rgba(6,18,36,0.95);}
+body.dark .auth-form{background:#0C1E36;border-color:#1E3A5F;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:Georgia,serif;font-size:15px;line-height:1.5;max-width:430px;margin:0 auto;}
+#app{height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.page.active{display:flex;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px;}
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(239,245,249,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;padding:6px 0 20px;z-index:100;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:Georgia,serif;font-size:0;transition:color 0.15s;}
+.nav-item.active{color:var(--primary);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.nav-icon{font-size:22px;line-height:1;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:var(--r);font-family:Georgia,serif;font-weight:600;font-size:14px;cursor:pointer;border:none;transition:transform 0.1s,opacity 0.15s;}
+.btn:active{transform:scale(0.97);}
+.btn-sun{background:var(--primary);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-ghost{background:transparent;color:var(--text3);}
+.btn-full{width:100%;} .btn-sm{padding:8px 14px;font-size:12px;border-radius:var(--rs);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:Georgia,serif;font-size:15px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s;-webkit-appearance:none;appearance:none;}
+.field input[type=number]{-moz-appearance:textfield;}
+.field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rl);padding:16px;}
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:0.04em;}
+.pill-sun{background:var(--primary-soft);color:var(--primary-d);}
+.pill-lime{background:var(--lime-soft);color:#15803D;}
+.pill-sky{background:var(--sky-soft);color:var(--sky);}
+.pill-rose{background:var(--rose-soft);color:#B91C1C;}
+.pill-sand{background:var(--surface-alt);color:#92400e;}
+body.dark .pill-lime{background:#134E3A;color:#4ADE80;}
+body.dark .pill-sky{background:#0C4A6E;color:#38BDF8;}
+.ph{padding:48px 20px 14px;display:flex;align-items:flex-start;justify-content:space-between;}
+.ph-title{font-size:26px;font-weight:800;}
+.ph-sub{font-size:13px;color:var(--text3);margin-top:2px;}
+.sec{padding:0 20px 20px;}
+.sec-t{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-full{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px;}
+.empty{text-align:center;padding:32px 20px;color:var(--text3);}
+.empty-icon{font-size:36px;margin-bottom:10px;}
+.empty-title{font-weight:700;font-size:15px;color:var(--text);margin-bottom:5px;}
+.empty-text{font-size:13px;line-height:1.6;}
+.overlay{position:fixed;inset:0;background:rgba(13,31,53,0.55);backdrop-filter:blur(4px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.sheet{background:var(--surface);border-radius:var(--rxl) var(--rxl) 0 0;padding:22px 22px 40px;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;animation:slideUp 0.25s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.modal-title{font-size:20px;font-weight:800;margin-bottom:18px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.stat-box{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;}
+.stat-val{font-size:24px;font-weight:800;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.dsw{overflow-x:auto;scrollbar-width:none;padding:0 20px 14px;max-width:100%;}
+.dsw::-webkit-scrollbar{display:none;}
+.ds{display:flex;gap:6px;width:max-content;}
+.dp{display:flex;flex-direction:column;align-items:center;width:38px;padding:6px 3px;border-radius:20px;cursor:pointer;border:1.5px solid transparent;background:none;font-family:Georgia,serif;transition:all 0.15s;}
+.dp:active{transform:scale(0.93);}
+.dp-dow{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.dp-num{font-size:14px;font-weight:700;color:var(--text2);width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all 0.15s;}
+.dp.is-today .dp-dow{color:var(--primary);}
+.dp.is-today .dp-num{background:var(--primary-soft);color:var(--primary-d);}
+.dp.is-sel .dp-num{background:var(--primary);color:#fff;}
+.past-banner{margin:0 20px 12px;background:var(--surface-alt);border:1.5px solid var(--primary-soft);border-radius:var(--r);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text2);font-style:italic;}
+.past-banner button{font-size:11px;font-weight:700;color:var(--primary);background:none;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;}
+.overdue-banner{margin:0 20px 14px;background:var(--rose-soft);border:1.5px solid var(--rose);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.overdue-text{flex:1;font-size:13px;color:var(--text);}
+.overdue-banner button{font-size:11px;font-weight:700;color:#B91C1C;background:none;border:none;cursor:pointer;white-space:nowrap;font-family:Georgia,serif;}
+.habit-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.habit-row:last-child{border-bottom:none;}
+.habit-row.ro{cursor:default;}
+.hc{width:28px;height:28px;border-radius:9px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.18s;background:transparent;}
+.hc.done{background:var(--primary);border-color:var(--primary);}
+.team-u{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.h-info{flex:1;min-width:0;}
+.h-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-pts{font-size:12px;color:var(--text3);margin-top:1px;}
+.h-member{font-size:11px;color:var(--text3);font-style:italic;margin-top:1px;}
+.combo-parts{background:var(--primary-soft);border-radius:var(--rs);padding:8px 10px;margin-top:4px;display:flex;flex-direction:column;gap:4px;}
+.combo-part{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.cdot{width:6px;height:6px;background:var(--primary);border-radius:50%;flex-shrink:0;}
+.rcard{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;}
+.rcard-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.rcard-info{flex:1;min-width:0;}
+.rcard-name{font-size:14px;font-weight:600;}
+.rcard-detail{font-size:12px;color:var(--text3);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.toggle-label{font-size:14px;color:var(--text);}
+.tgl{width:44px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.tgl.on{background:var(--lime);}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.tgl.on::after{transform:translateX(18px);}
+.invite-box{background:var(--primary-soft);border:2px dashed var(--primary);border-radius:var(--r);padding:14px;text-align:center;margin-bottom:16px;}
+.invite-code{font-size:26px;font-weight:800;letter-spacing:0.2em;color:var(--primary);margin:4px 0;}
+.rate-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.rate-row:last-child{border-bottom:none;}
+.rate-name{flex:1;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rate-bar{width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.rate-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary),#FDBA74);transition:width 0.5s ease;}
+.rate-pct{font-size:12px;font-weight:700;color:var(--text2);width:32px;text-align:right;flex-shrink:0;}
+.act-opt{display:flex;align-items:flex-start;gap:14px;padding:14px;border-radius:var(--r);cursor:pointer;transition:background 0.12s;border:1.5px solid var(--border);margin-bottom:10px;}
+.act-opt:hover{background:var(--bg);}
+.act-opt.danger{border-color:var(--rose-soft);}
+.act-opt.danger .act-title{color:var(--rose);}
+.act-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.act-title{font-weight:700;font-size:14px;margin-bottom:2px;}
+.act-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);background:#0D1F35;color:#fff;padding:9px 18px;border-radius:22px;font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.pcheck{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;padding:6px 0;}
+.pcheck input{display:none;}
+.pcheck-box{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;color:transparent;font-size:13px;flex-shrink:0;transition:all 0.15s;font-weight:700;}
+.pcheck input:checked + .pcheck-box{background:var(--primary);border-color:var(--primary);color:#fff;}
+.history-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.history-row:last-child{border-bottom:none;}
+.h-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.h-lbl{font-size:14px;font-weight:500;}
+.h-sub{font-size:12px;color:var(--text3);margin-top:1px;}
+.h-pts{font-size:14px;font-weight:700;flex-shrink:0;}
+.team-toggle{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 0;font-family:Georgia,serif;}
+.team-toggle .chev{transition:transform 0.2s;font-size:14px;}
+.team-toggle.open .chev{transform:rotate(180deg);}
+@keyframes bounceIn{0%{transform:scale(0.5);opacity:0;}70%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+.bounce-in{animation:bounceIn 0.28s ease forwards;}
+#auth-screen{background:var(--bg);min-height:100vh;display:flex;flex-direction:column;padding:32px 28px 40px;justify-content:center;}
+.auth-logo{font-size:50px;font-style:italic;font-weight:600;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.auth-tagline{font-size:15px;color:var(--text3);font-style:italic;margin-top:10px;margin-bottom:28px;}
+.auth-form{background:var(--surface);border-radius:var(--rxl);padding:22px;border:1.5px solid var(--border);}
+.auth-error{background:var(--rose-soft);color:#B91C1C;padding:10px 14px;border-radius:var(--rs);font-size:13px;margin-bottom:14px;display:none;}
+
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-full" id="loading-screen">
+  <div style="display:flex;align-items:center;gap:10px;font-family:Georgia,serif;font-style:italic;font-size:30px;color:var(--text);">
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="-115 -115 230 230"><g><polygon points="0,-104 3,-58 -3,-58" transform="rotate(0)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(36)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(72)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(108)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(144)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(180)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(216)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(252)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(288)" fill="#f97316"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(324)" fill="#f97316"/></g><circle cx="0" cy="0" r="60" fill="#f97316"/></svg>uni party</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- AUTH -->
+<div id="auth-screen" style="display:none;">
+  <div class="auth-logo">uni party
+    <span style="display:inline-flex;align-items:center;justify-content:center;background:var(--primary);border-radius:12px;padding:4px 8px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-115 -115 230 230"><g><polygon points="0,-104 3,-58 -3,-58" transform="rotate(0)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(36)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(72)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(108)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(144)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(180)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(216)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(252)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(288)" fill="#fff"/><polygon points="0,-104 3,-58 -3,-58" transform="rotate(324)" fill="#fff"/></g><circle cx="0" cy="0" r="60" fill="#fff"/></svg>
+    </span>
+  </div>
+  <div class="auth-form">
+    <div id="auth-s1">
+      <div class="field" style="margin-bottom:12px;"><label>Username</label>
+        <input type="text" id="auth-user" placeholder="your username" autocapitalize="none" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')doCheckUser()">
+      </div>
+      <div id="auth-err" class="auth-error"></div>
+      <button class="btn btn-sun btn-full" id="auth-btn" onclick="doCheckUser()">Continue →</button>
+    </div>
+    <div id="auth-s2a" style="display:none;">
+      <div style="font-style:italic;font-size:16px;margin-bottom:16px;">Welcome back, <strong id="auth-name-a"></strong></div>
+      <div class="field"><label>Password</label><input type="password" id="auth-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn btn-sun btn-full" id="login-btn" onclick="doLogin()">Sign In</button>
+      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="resetAuth()">← Back</button>
+    </div>
+    <div id="auth-s2b" style="display:none;">
+      <div style="font-style:italic;font-size:16px;margin-bottom:16px;">Create account for <strong id="auth-name-b"></strong></div>
+      <div class="field"><label>Password</label><input type="password" id="auth-new-pw" placeholder="min 8 characters" oninput="checkPw(this.value)" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;" id="pw-req">✗ At least 8 characters</div>
+      <div class="field"><label>Email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(optional, for recovery)</span></label>
+        <input type="email" id="auth-email" placeholder="you@email.com">
+      </div>
+      <button class="btn btn-sun btn-full" id="reg-btn" onclick="doRegister()" disabled>Create Account</button>
+      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="resetAuth()">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding-screen" style="display:none;background:var(--bg);min-height:100vh;display:none;flex-direction:column;padding:32px 28px 40px;justify-content:center;">
+  <div style="font-size:36px;margin-bottom:8px;">🎉</div>
+  <div style="font-size:26px;font-weight:800;margin-bottom:6px;">Join the Party!</div>
+  <div style="font-size:15px;color:var(--text3);font-style:italic;margin-bottom:28px;">Create a new project or join one with an invite code to get started.</div>
+  <div class="auth-form">
+    <div id="ob-main">
+      <button class="btn btn-sun btn-full" style="margin-bottom:10px;" onclick="showOBCreate()">+ Create a Project</button>
+      <button class="btn btn-outline btn-full" onclick="showOBJoin()">Join with Invite Code</button>
+    </div>
+    <div id="ob-create" style="display:none;">
+      <div style="font-weight:700;font-size:16px;margin-bottom:16px;">New Project</div>
+      <div class="field"><label>Project Name</label><input type="text" id="ob-cp-name" placeholder="e.g. Uni Party 🍣"></div>
+      <div class="field"><label>Point Name</label><input type="text" id="ob-cp-pts" placeholder="e.g. grams uni, coins, stars"></div>
+      <div class="field"><label>First Party Date</label><input type="date" id="ob-cp-date"></div>
+      <div id="ob-create-err" style="color:var(--rose);font-size:13px;margin-bottom:12px;display:none;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="showOBMain()">← Back</button>
+        <button class="btn btn-sun" style="flex:1;" onclick="doOBCreate()">Create</button>
+      </div>
+    </div>
+    <div id="ob-join" style="display:none;">
+      <div style="font-weight:700;font-size:16px;margin-bottom:16px;">Join a Project</div>
+      <div class="field"><label>Invite Code</label><input type="text" id="ob-join-code" placeholder="8-character code" autocapitalize="none" style="font-size:22px;letter-spacing:0.15em;text-align:center;"></div>
+      <div id="ob-join-err" style="color:var(--rose);font-size:13px;margin-bottom:12px;display:none;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="flex:1;" onclick="showOBMain()">← Back</button>
+        <button class="btn btn-sun" style="flex:1;" onclick="doOBJoin()">Join</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+
+<!-- PAGE: TODAY -->
+<div class="page active" id="page-today">
+  <div class="scroll">
+    <div class="ph">
+      <div><div class="ph-title">Today</div><div class="ph-sub" id="today-sub">—</div></div>
+      <button class="btn btn-outline btn-sm" onclick="showSwitcher()" id="today-proj">No project</button>
+    </div>
+    <!-- Summary card -->
+    <div class="sec" style="padding-bottom:14px;">
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+          <div>
+            <div style="font-size:13px;color:var(--text3);margin-bottom:1px;" id="greet-label">Good morning</div>
+            <div style="font-size:22px;font-weight:800;font-style:italic;" id="greet-name">—</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;" id="bal-unit-label">balance</div>
+            <div style="font-size:28px;font-weight:800;" id="today-bal">0</div>
+          </div>
+        </div>
+        <div id="today-countdown" style="display:none;margin-bottom:10px;font-size:13px;color:var(--text3);font-style:italic;" id="countdown-txt"></div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;"><span id="progress-date-lbl">today</span><span id="today-pct">0%</span></div>
+          <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;">
+            <div id="today-bar" style="height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary),#FDBA74);width:0%;transition:width 0.4s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Overdue banner -->
+    <div class="overdue-banner" id="overdue-banner" style="display:none;">
+      <span style="font-size:18px;">📅</span>
+      <span class="overdue-text">No upcoming party date — stats won't work until you add one.</span>
+      <button onclick="showAddPartyDate()">Add date</button>
+    </div>
+    <!-- Date strip -->
+    <div class="dsw" id="dsw"><div class="ds" id="ds"></div></div>
+    <div class="past-banner" id="past-banner" style="display:none;"><span id="past-txt"></span><button onclick="jumpToday()">Back to Today</button></div>
+    <!-- Habits -->
+    <div class="sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sec-t" style="margin-bottom:0;">Habits</div>
+        <button class="btn btn-outline btn-sm" onclick="showAddHabit()">+ Add</button>
+      </div>
+      <div class="card" style="padding:0 16px;"><div id="habits-list"></div></div>
+    </div>
+    <!-- Team section -->
+    <div class="sec" id="team-wrap" style="display:none;">
+      <button class="team-toggle" id="team-btn" onclick="toggleTeam()"><span class="chev">▾</span>See team</button>
+      <div id="team-list" style="display:none;margin-top:10px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: PARTY -->
+<div class="page" id="page-party">
+  <div class="scroll">
+    <div class="ph">
+      <div><div class="ph-title">Party</div></div>
+      <button class="btn btn-outline btn-sm" onclick="showSwitcher()" id="party-proj">No project</button>
+    </div>
+    <div class="sec" style="padding-bottom:14px;">
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;" id="party-bal-lbl">balance</div>
+          <div style="font-size:30px;font-weight:800;" id="party-bal">0</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showManualSpend()">💸 Redeem</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sec-t" style="margin-bottom:0;">Rewards</div>
+        <button class="btn btn-outline btn-sm" onclick="showAddReward()">+ Add</button>
+      </div>
+      <div id="party-rewards"></div>
+    </div>
+    <div class="sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sec-t" style="margin-bottom:0;">Goals</div>
+        <button class="btn btn-outline btn-sm" onclick="showAddGoal()">+ Add</button>
+      </div>
+      <div id="party-goals"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-t">Recent Spending</div>
+      <div id="party-hist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: STATS -->
+<div class="page" id="page-stats">
+  <div class="scroll">
+    <div class="ph">
+      <div><div class="ph-title">Stats</div></div>
+      <button class="btn btn-outline btn-sm" onclick="showSwitcher()" id="stats-proj">No project</button>
+    </div>
+    <div class="sec">
+      <div class="sec-t">Balances</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" id="s-mybln">0</div><div class="stat-lbl" id="s-mybln-l">your balance</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-grpbln">0</div><div class="stat-lbl" id="s-grpbln-l">group balance</div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-t">Total Earnings</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:8px;">This Party Period</div>
+      <div class="stat-grid" style="margin-bottom:16px;">
+        <div class="stat-box"><div class="stat-val" id="s-period-me">0</div><div class="stat-lbl" id="s-period-me-l">earned by you</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-period-grp">0</div><div class="stat-lbl" id="s-period-grp-l">earned by group</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:8px;">Lifetime</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" id="s-life-me">0</div><div class="stat-lbl" id="s-life-me-l">earned by you</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-life-grp">0</div><div class="stat-lbl" id="s-life-grp-l">earned by group</div></div>
+      </div>
+    </div>
+    <div class="sec" id="rates-sec" style="display:none;">
+      <div class="sec-t" id="rates-title">Completion Rate</div>
+      <div class="card" style="padding:12px 16px;"><div id="rates-list"></div></div>
+    </div>
+    <div class="sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="sec-t" style="margin-bottom:0;">Party Dates</div>
+        <button class="btn btn-outline btn-sm" onclick="showAddPartyDate()">+ Add</button>
+      </div>
+      <div id="party-dates-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: PROFILE -->
+<div class="page" id="page-profile">
+  <div class="scroll">
+    <div class="ph"><div><div class="ph-title">Profile</div></div></div>
+    <div class="sec">
+      <div class="sec-t">Account</div>
+      <div class="card">
+        <div style="margin-bottom:4px;"><div style="font-size:12px;color:var(--text3);">Username</div><div style="font-weight:700;font-size:16px;" id="prof-user">—</div></div>
+        <div class="divider"></div>
+        <div style="margin-bottom:12px;"><div style="font-size:12px;color:var(--text3);">Email</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span id="prof-email" style="font-weight:500;font-size:15px;">No email set</span>
+            <button class="btn btn-ghost btn-sm" onclick="showEditEmail()" id="email-btn">Add</button>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-full btn-sm" onclick="showChangePw()">Change Password</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-t">Display Names</div>
+      <div class="card"><div id="prof-dnames"><div style="font-size:13px;color:var(--text3);">Join a project to set your display name.</div></div></div>
+    </div>
+    <div class="sec">
+      <div class="sec-t">Projects</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-sun btn-sm" style="flex:1;" onclick="showCreateProj()">+ New</button>
+        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="showJoinProj()">Join with Code</button>
+      </div>
+      <div id="prof-projects"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-t">App</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--text3);margin-bottom:4px;">Active Project</div>
+        <div style="font-weight:700;margin-bottom:14px;" id="prof-active">None</div>
+        <button class="btn btn-outline btn-full btn-sm" style="margin-bottom:10px;" onclick="showHistory()">📋 Project History</button>
+        <div class="toggle-row"><span class="toggle-label">Dark mode</span><div class="tgl" id="dark-tgl" onclick="toggleDark()"></div></div>
+        <button class="btn btn-ghost btn-full btn-sm" style="color:var(--rose);margin-top:4px;" onclick="doLogout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <button class="nav-item active" onclick="switchPage('today')"><span class="nav-icon">☀️</span>Today</button>
+  <button class="nav-item" onclick="switchPage('party')"><span class="nav-icon">🎉</span>Party</button>
+  <button class="nav-item" onclick="switchPage('stats')"><span class="nav-icon">📊</span>Stats</button>
+  <button class="nav-item" onclick="switchPage('profile')"><span class="nav-icon">👤</span>Profile</button>
+</nav>
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="overlay" id="m-switcher">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Switch Project</div>
+  <div id="sw-list"></div><button class="btn btn-ghost btn-full" onclick="closeM('m-switcher')">Cancel</button></div>
+</div>
+
+<div class="overlay" id="m-create-proj">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">New Project</div>
+  <div class="field"><label>Project Name</label><input type="text" id="cp-name" placeholder="e.g. Uni Party 🍣"></div>
+  <div class="field"><label>Point Name</label><input type="text" id="cp-pts" placeholder="e.g. grams uni, coins, stars"></div>
+  <div class="field"><label>First Party Date</label><input type="date" id="cp-date"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-create-proj')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doCreateProj()">Create</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-join-proj">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Join a Project</div>
+  <div class="field"><label>Invite Code</label><input type="text" id="join-code" placeholder="8-character code" autocapitalize="none" style="font-size:22px;letter-spacing:0.15em;text-align:center;"></div>
+  <div id="join-err" style="color:var(--rose);font-size:13px;margin-bottom:12px;display:none;"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-join-proj')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doJoinProj()">Join</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-proj-detail">
+  <div class="sheet"><div class="handle"></div>
+  <div class="modal-title" id="pd-name">Project</div>
+  <div class="invite-box"><div style="font-size:12px;color:var(--text3);">Invite Code — share with friends</div><div class="invite-code" id="pd-code">XXXXXXXX</div><button class="btn btn-outline btn-sm" onclick="copyCode()">Copy</button></div>
+  <div class="sec-t">Members</div><div id="pd-members" style="margin-bottom:16px;"></div>
+  <div class="sec-t">Party Dates</div><div id="pd-dates" style="margin-bottom:16px;"></div>
+  <button class="btn btn-ghost btn-full" onclick="closeM('m-proj-detail')">Done</button>
+  </div>
+</div>
+
+<div class="overlay" id="m-add-reward">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Add Reward</div>
+  <div class="field"><label>Reward Name</label><input type="text" id="ar-name" placeholder="e.g. piece of uni, tray raffle"></div>
+  <div class="field"><label>Point Value <span id="ar-unit" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);"></span></label><input type="text" id="ar-val" placeholder="5" inputmode="decimal"></div>
+  <div class="field"><label>Chance % <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">(100 = guaranteed, lower = raffle)</span></label><input type="text" id="ar-chance" value="100" inputmode="decimal"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-add-reward')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doAddReward()">Add</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-add-goal">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Add Goal</div>
+  <div class="field"><label>Goal Description</label><input type="text" id="ag-name" placeholder="e.g. finish paper draft"></div>
+  <div class="field"><label>Reward</label><select id="ag-reward"></select></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-add-goal')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doAddGoal()">Add</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-redeem">
+  <div class="sheet"><div class="handle"></div><div class="modal-title" id="redeem-title">Redeem</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">Available: <strong id="redeem-avail">0</strong> <span id="redeem-unit"></span></div>
+  <div class="field"><label>Points to spend</label><input type="text" id="redeem-pts" inputmode="decimal" placeholder="0"></div>
+  <div class="field"><label>Date redeemed</label><input type="date" id="redeem-date"></div>
+  <div class="field"><label>Note <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">(optional)</span></label><input type="text" id="redeem-note" placeholder="e.g. uni at Toyose"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-redeem')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doRedeem()">Confirm</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-add-habit">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Add Habit</div>
+  <div class="field"><label>Habit Name</label><input type="text" id="ah-name" placeholder="e.g. ≥30min workout"></div>
+  <div class="field"><label>Points per Completion</label><input type="text" id="ah-pts" placeholder="1" inputmode="decimal"></div>
+  <div class="toggle-row" style="margin-bottom:12px;"><span class="toggle-label">Combo habit (multiple sub-tasks)</span><div class="tgl" id="ah-combo-tgl" onclick="toggleCombo()"></div></div>
+  <div id="ah-combo-sec" style="display:none;margin-bottom:12px;">
+    <div style="font-size:13px;color:var(--text3);margin-bottom:8px;">All parts must be done the same day:</div>
+    <div id="ah-combo-parts"></div>
+    <button class="btn btn-outline btn-sm btn-full" onclick="addComboPart()">+ Add part</button>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-add-habit')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doAddHabit()">Add Habit</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-habit-action">
+  <div class="sheet"><div class="handle"></div>
+  <div class="modal-title" id="ha-title">Manage Habit</div>
+  <div class="act-opt" onclick="showLogPast()">
+    <div class="act-icon">📅</div>
+    <div><div class="act-title">Log past completion</div><div class="act-desc">Add a completion for a previous date and earn the points for it.</div></div>
+  </div>
+  <div class="act-opt" onclick="showModifyPoints()">
+    <div class="act-icon">✏️</div>
+    <div><div class="act-title">Change point value</div><div class="act-desc">Update how many points this habit is worth. Your balance will adjust to reflect the change.</div></div>
+  </div>
+  <div class="act-opt danger" onclick="showDelConfirm()">
+    <div class="act-icon">🗑️</div>
+    <div><div class="act-title">Delete habit</div><div class="act-desc">Removes this habit and erases all earned points. Only use if added by mistake.</div></div>
+  </div>
+  <button class="btn btn-ghost btn-full" style="margin-top:4px;" onclick="closeM('m-habit-action')">Cancel</button>
+  </div>
+</div>
+
+<div class="overlay" id="m-del-confirm">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Delete forever?</div>
+  <div style="font-size:14px;color:var(--text2);margin-bottom:20px;">"<span id="del-name" style="font-weight:700;color:var(--text);"></span>" and all points earned from it will be permanently erased.</div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-del-confirm');openM('m-habit-action')">Back</button>
+    <button class="btn btn-sun" style="flex:1;background:var(--rose);" onclick="doDelete()">Delete &amp; Remove Points</button>
+  </div></div>
+</div>
+
+
+<div class="overlay" id="m-modify-pts">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Change Point Value</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">Updating the value will recalculate all past completions and adjust your balance.</div>
+  <div class="field"><label>Points per completion</label><input type="text" id="mp-val" inputmode="decimal" placeholder="1"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-modify-pts');openM('m-habit-action')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doModifyPoints()">Save</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-log-past">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Log Past Completion</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:14px;" id="log-past-name"></div>
+  <div class="field"><label>Date</label><input type="date" id="log-past-date"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-log-past');openM('m-habit-action')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doLogPast()">Save</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-party-date">
+  <div class="sheet"><div class="handle"></div><div class="modal-title" id="apd-title">Add Party Date</div>
+  <div class="field"><label>Date</label><input type="date" id="apd-date"></div>
+  <div class="field"><label>Label <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">(optional)</span></label><input type="text" id="apd-label" placeholder="e.g. Spring Uni Party"></div>
+  <input type="hidden" id="apd-id">
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-party-date')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doSavePartyDate()">Save</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-change-pw">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Change Password</div>
+  <div class="field"><label>Current Password</label><input type="password" id="cpw-cur" placeholder="••••••••"></div>
+  <div class="field"><label>New Password</label><input type="password" id="cpw-new" placeholder="min 8 characters"></div>
+  <div id="cpw-err" style="color:var(--rose);font-size:13px;margin-bottom:12px;display:none;"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-change-pw')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doChangePw()">Update</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-edit-email">
+  <div class="sheet"><div class="handle"></div><div class="modal-title" id="email-m-title">Add Email</div>
+  <div class="field"><label>Email address</label><input type="email" id="email-val" placeholder="you@email.com"></div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-edit-email')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doUpdateEmail()">Save</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-edit-dn">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">Display Name</div>
+  <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">How your name appears in <strong id="dn-proj"></strong>.</div>
+  <div class="field"><label>Display Name</label><input type="text" id="dn-val" placeholder="Party Person" maxlength="40"></div>
+  <input type="hidden" id="dn-pid">
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-outline" style="flex:1;" onclick="closeM('m-edit-dn')">Cancel</button>
+    <button class="btn btn-sun" style="flex:1;" onclick="doUpdateDN()">Save</button>
+  </div></div>
+</div>
+
+<div class="overlay" id="m-history">
+  <div class="sheet"><div class="handle"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="modal-title" style="margin-bottom:0;">Project History</div>
+    <button class="btn btn-outline btn-sm" id="hist-scope-btn" onclick="toggleHistScope()">Everyone</button>
+  </div>
+  <div id="hist-list"></div>
+  <button class="btn btn-ghost btn-full" style="margin-top:12px;" onclick="closeM('m-history')">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="m-raffle">
+  <div class="sheet"><div class="handle"></div><div class="modal-title">🎰 Raffle Draw</div>
+  <div id="raffle-content"></div>
+  <button class="btn btn-outline btn-full" style="margin-top:16px;" onclick="closeM('m-raffle')">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// HELPERS
+// ============================================================
+function uSVG(color, size) {
+  size = size || 15;
+  const sp = [0,36,72,108,144,180,216,252,288,324]
+    .map(r => `<polygon points="0,-104 3,-58 -3,-58" transform="rotate(${r})" fill="${color}"/>`)
+    .join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="-115 -115 230 230" style="display:block;flex-shrink:0;">${sp}<circle cx="0" cy="0" r="60" fill="${color}"/></svg>`;
+}
+const U_WHITE = uSVG('#fff', 15);
+function teamU(done) { return uSVG(done ? '#F97316' : '#B6C8D4', 14); }
+function emptyHTML(icon, title, text) {
+  return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-title">${title}</div><div class="empty-text">${text}</div></div>`;
+}
+function g(id) { return document.getElementById(id); }
+function fmt(n) { n=parseFloat(n)||0; return n%1===0?n.toFixed(0):n.toFixed(2); }
+function toast(msg,e='') { const t=g('toast'); t.textContent=(e?e+' ':'')+msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function viewStr() { return st.viewingDate||todayStr(); }
+function isToday() { return viewStr()===todayStr(); }
+function addDays(base,n) { const d=new Date(base+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; }
+function fmtDate(d) { return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function pname() { return st.activeProject?.point_name||'pts'; }
+function dname(uid) { return (st.projectMembers.find(m=>m.user_id===uid)||{}).display_name||'Party Person'; }
+function setProj(id) { st.activeProjectId=id; localStorage.setItem('up_proj',id); }
+
+// ============================================================
+// SUPABASE CLIENT
+// ============================================================
+const SB_URL = 'https://usbnnsumwzvdgmskmxjr.supabase.co', SB_KEY = 'sb_publishable_xKwPzo46sU1RVLXW45869g_wZ8OnlM7';
+const sb = {
+  _h(x={}) { const h={'apikey':SB_KEY,...x}; h.Authorization=`Bearer ${st.token||SB_KEY}`; return h; },
+  async _fetch(method, path, body) {
+    const r = await fetch(SB_URL+path, {method, headers: this._h({'Content-Type':'application/json','Prefer':'return=representation'}), body: body?JSON.stringify(body):undefined});
+    try{return JSON.parse(await r.text());}catch{return{error:'parse error'};}
+  },
+  async signUp(e,p) { return this._fetch('POST','/auth/v1/signup',{email:e,password:p}); },
+  async signIn(e,p) { return this._fetch('POST','/auth/v1/token?grant_type=password',{email:e,password:p}); },
+  async signOut() { if(!st.token)return; await fetch(SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SB_KEY,Authorization:`Bearer ${st.token}`}}); },
+  async updPw(p) { return this._fetch('PUT','/auth/v1/user',{password:p}); },
+  async rpc(fn,params={}) { return this._fetch('POST','/rest/v1/rpc/'+fn,params); },
+  async q(t,o={}) {
+    let u='/rest/v1/'+t+'?';
+    if(o.select)u+='select='+encodeURIComponent(o.select)+'&';
+    if(o.filter)u+=o.filter+'&';
+    if(o.order)u+='order='+o.order+'&';
+    const r=await fetch(SB_URL+u,{headers:this._h()});
+    try{return JSON.parse(await r.text());}catch{return[];}
+  },
+  async ins(t,d) { return this._fetch('POST','/rest/v1/'+t,d); },
+  async upd(t,f,d) {
+    const r=await fetch(SB_URL+'/rest/v1/'+t+'?'+f,{method:'PATCH',headers:this._h({'Content-Type':'application/json','Prefer':'return=representation'}),body:JSON.stringify(d)});
+    try{return JSON.parse(await r.text());}catch{return{error:'parse error'};}
+  },
+  async del(t,f) { const r=await fetch(SB_URL+'/rest/v1/'+t+'?'+f,{method:'DELETE',headers:this._h()}); return r.ok; }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+const st = {
+  token: localStorage.getItem('up_tok'),
+  userId: localStorage.getItem('up_uid'),
+  username: localStorage.getItem('up_uname'),
+  activeProjectId: localStorage.getItem('up_proj'),
+  projects:[], habits:[], completions:{},
+  teamHabits:[], teamCompletions:{},
+  activeProject:null, projectMembers:[],
+  projectRewards:[], projectGoals:[], partyDates:[],
+  ledger:[],
+  displayName:'Party Person',
+  email:null,
+  viewingDate:null, showTeam:false, histAll:false,
+  _habitId:null, _redeemReward:null,
+  _rewardMap: new Map()
+};
+
+// ============================================================
+// LEDGER STATS (single pass)
+// ============================================================
+function ledgerStats() {
+  let myBal=0, grpEarned=0, myEarned=0;
+  for (const x of st.ledger) {
+    const pts = parseFloat(x.points);
+    if (x.entry_type !== 'spent') {
+      grpEarned += pts;
+      if (x.user_id === st.userId) { myEarned += pts; myBal += pts; }
+    } else if (x.user_id === st.userId) {
+      myBal -= pts;
+    }
+  }
+  return {myBal, grpEarned, myEarned};
+}
+
+// ============================================================
+// INIT & LOAD
+// ============================================================
+async function init() {
+  initDark();
+  if (!st.token || !st.userId) { showAuth(); return; }
+  try {
+    const check = await sb.q('users',{select:'id',filter:'id=eq.'+st.userId});
+    if (!Array.isArray(check) || !check.length) { localStorage.clear(); showAuth(); return; }
+    await loadAll(); showApp();
+  } catch(e) { console.error(e); localStorage.clear(); showAuth(); }
+}
+
+async function loadAll() {
+  await loadPrefs();
+  await Promise.all([loadProjects(), loadHabits()]);
+  if (st.activeProjectId) await loadProjData(st.activeProjectId);
+  await loadCompletions(viewStr());
+}
+
+async function loadPrefs() {
+  const d = await sb.q('users',{select:'dark_mode,email',filter:'id=eq.'+st.userId});
+  if (Array.isArray(d)&&d[0]) {
+    const dark = d[0].dark_mode ?? true;
+    localStorage.setItem('up_dark', dark?'1':'0');
+    document.body.classList.toggle('dark', dark);
+    const t=g('dark-tgl'); if(t)t.classList.toggle('on', dark);
+    st.email = d[0].email || null;
+  }
+}
+
+async function loadProjects() {
+  const d = await sb.q('project_members',{
+    select:'project_id,display_name,projects(id,name,point_name,invite_code,created_by,created_at)',
+    filter:'user_id=eq.'+st.userId
+  });
+  st.projects = Array.isArray(d) ? d.map(m=>{
+    if(!m.projects)return null;
+    return {...m.projects, myDN:m.display_name||'Party Person'};
+  }).filter(Boolean) : [];
+  if (!st.activeProjectId && st.projects.length>0) setProj(st.projects[0].id);
+}
+
+async function loadHabits() {
+  let d = await sb.q('habits',{
+    select:'id,name,points_per_completion,is_combo,is_active,combo_parts(id,name,sort_order),habit_projects(project_id)',
+    filter:'user_id=eq.'+st.userId+'&is_active=neq.false', order:'created_at.asc'
+  });
+  if (!Array.isArray(d)) d = await sb.q('habits',{
+    select:'id,name,points_per_completion,is_combo,combo_parts(id,name,sort_order),habit_projects(project_id)',
+    filter:'user_id=eq.'+st.userId, order:'created_at.asc'
+  });
+  st.habits = Array.isArray(d) ? d : [];
+}
+
+async function loadProjData(pid) {
+  const [mem,rew,gls,pds,led] = await Promise.all([
+    sb.q('project_members',{select:'user_id,display_name',filter:'project_id=eq.'+pid}),
+    sb.q('rewards',{select:'*',filter:'project_id=eq.'+pid,order:'created_at.asc'}),
+    sb.q('goals',{select:'id,name,completed,completed_at,user_id,reward_id,rewards(name,point_value,chance_pct)',filter:'project_id=eq.'+pid,order:'created_at.asc'}),
+    sb.q('party_dates',{select:'*',filter:'project_id=eq.'+pid,order:'party_date.asc'}),
+    sb.q('point_ledger',{
+      select:'id,user_id,entry_type,points,activity_date,habit_id,goal_id,reward_id,note,created_at,habits(name),rewards(name)',
+      filter:'project_id=eq.'+pid, order:'created_at.desc'
+    })
+  ]);
+  st.projectMembers = Array.isArray(mem)?mem:[];
+  st.projectRewards = Array.isArray(rew)?rew:[];
+  st.projectGoals   = Array.isArray(gls)?gls:[];
+  st.partyDates     = Array.isArray(pds)?pds:[];
+  st.ledger         = Array.isArray(led)?led:[];
+  st.activeProject  = st.projects.find(p=>p.id===pid)||null;
+  const me = st.projectMembers.find(m=>m.user_id===st.userId);
+  st.displayName = me?.display_name||'Party Person';
+  // Build reward lookup map
+  st._rewardMap = new Map(st.projectRewards.map(r=>[r.id, r]));
+}
+
+async function loadCompletions(dateStr) {
+  const d = await sb.q('habit_completions',{
+    select:'habit_id,user_id,completed_date', filter:'completed_date=eq.'+dateStr
+  });
+  st.completions = {}; st.teamCompletions = {};
+  if (Array.isArray(d)) {
+    d.forEach(c => {
+      if (c.user_id===st.userId) st.completions[c.habit_id+'_'+c.completed_date]=true;
+      else st.teamCompletions[c.habit_id+'_'+c.completed_date]=true;
+    });
+  }
+}
+
+async function loadTeamHabits() {
+  if (!st.activeProjectId) { st.teamHabits=[]; return; }
+  const hp = await sb.q('habit_projects',{select:'habit_id',filter:'project_id=eq.'+st.activeProjectId});
+  if (!Array.isArray(hp)||!hp.length) { st.teamHabits=[]; return; }
+  const ids = hp.map(x=>x.habit_id).join(',');
+  const d = await sb.q('habits',{
+    select:'id,name,points_per_completion,user_id',
+    filter:'id=in.('+ids+')&user_id=neq.'+st.userId+'&is_active=neq.false'
+  });
+  st.teamHabits = Array.isArray(d)?d:[];
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+function showAuth() { g('loading-screen').style.display='none'; g('auth-screen').style.display='flex'; g('app').style.display='none'; }
+function showApp() {
+  g('loading-screen').style.display='none'; g('auth-screen').style.display='none'; g('app').style.display='flex';
+  document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+  renderAll();
+}
+function renderAll() { updateProjUI(); renderToday(); renderParty(); renderStats(); renderProfile(); }
+function resetAuth() { ['auth-s1','auth-s2a','auth-s2b'].forEach(id=>{const el=g(id);if(el)el.style.display=id==='auth-s1'?'':'none';}); g('auth-err').style.display='none'; }
+function checkPw(pw) { const ok=pw.length>=8; const r=g('pw-req'); r.textContent=(ok?'✓':'✗')+' At least 8 characters'; r.style.color=ok?'var(--lime)':'var(--text3)'; g('reg-btn').disabled=!ok; }
+function authErr(msg) { const el=g('auth-err'); el.textContent=msg; el.style.display=''; }
+
+async function doCheckUser() {
+  const u=g('auth-user').value.trim().toLowerCase(); if(!u)return authErr('Enter a username');
+  if(!/^[a-zA-Z0-9._-]+$/.test(u))return authErr('Letters, numbers, . _ - only');
+  const btn=g('auth-btn'); btn.disabled=true; btn.textContent='Checking...'; g('auth-err').style.display='none';
+  const ex=await sb.rpc('username_exists',{p_username:u}); btn.disabled=false; btn.textContent='Continue';
+  g('auth-s1').style.display='none';
+  if(ex===true||ex==='true'){ g('auth-name-a').textContent=u; g('auth-s2a').style.display=''; setTimeout(()=>g('auth-pw').focus(),50); }
+  else { g('auth-name-b').textContent=u; g('auth-s2b').style.display=''; setTimeout(()=>g('auth-new-pw').focus(),50); }
+}
+
+async function doLogin() {
+  const u=g('auth-user').value.trim().toLowerCase(), p=g('auth-pw').value; if(!p)return authErr('Enter password');
+  const btn=g('login-btn'); btn.disabled=true; btn.textContent='Signing in...';
+  const res=await sb.signIn(u+'@uni.internal',p); const uid=res?.user?.id;
+  if(!res.error&&res.access_token&&uid) {
+    st.token=res.access_token; localStorage.setItem('up_tok',res.access_token);
+    const ud=await sb.q('users',{select:'id,username,email,dark_mode',filter:'auth_id=eq.'+uid});
+    if(!Array.isArray(ud)||!ud[0]){authErr('Account not found.');btn.disabled=false;btn.textContent='Sign In';return;}
+    if(!ud[0].auth_id) await sb.upd('users','id=eq.'+ud[0].id,{auth_id:uid});
+    saveSession({uid:ud[0].id,uname:ud[0].username,tok:res.access_token});
+    if(ud[0].dark_mode!==null){localStorage.setItem('up_dark',ud[0].dark_mode?'1':'0');document.body.classList.toggle('dark',ud[0].dark_mode);}
+    await loadAll(); showApp(); return;
+  }
+  authErr('Incorrect password'); btn.disabled=false; btn.textContent='Sign In';
+}
+
+async function doRegister() {
+  const u=g('auth-user').value.trim().toLowerCase(), p=g('auth-new-pw').value, e=g('auth-email').value.trim();
+  if(p.length<8)return;
+  const btn=g('reg-btn'); btn.disabled=true; btn.textContent='Creating...';
+  const res=await sb.signUp(u+'@uni.internal',p);
+  if(res.error){authErr(res.error.message||'Registration failed');btn.disabled=false;btn.textContent='Create Account';return;}
+  const tok=res.access_token||res.session?.access_token, uid=res?.user?.id||res?.session?.user?.id;
+  if(!tok||!uid){authErr('Registration failed — disable email confirmation in Supabase Auth settings.');btn.disabled=false;btn.textContent='Create Account';return;}
+  st.token=tok; localStorage.setItem('up_tok',tok);
+  const ur=await sb.ins('users',{username:u,email:e||null,auth_id:uid,dark_mode:true});
+  const nu=Array.isArray(ur)?ur[0]:ur;
+  if(!nu?.id){authErr('Error creating profile: '+JSON.stringify(ur).slice(0,200));btn.disabled=false;btn.textContent='Create Account';return;}
+  saveSession({uid:nu.id,uname:u,tok});
+  await loadAll(); showOnboarding();
+}
+
+function saveSession(r) { st.token=r.tok; st.userId=r.uid; st.username=r.uname; localStorage.setItem('up_tok',r.tok); localStorage.setItem('up_uid',r.uid); localStorage.setItem('up_uname',r.uname); }
+
+function showOnboarding() {
+  g('loading-screen').style.display='none'; g('auth-screen').style.display='none'; g('app').style.display='none';
+  const ob=g('onboarding-screen'); ob.style.display='flex'; ob.style.flexDirection='column';
+  showOBMain();
+}
+function showOBMain() { ['ob-create','ob-join'].forEach(id=>g(id).style.display='none'); g('ob-main').style.display=''; }
+function showOBCreate() { g('ob-main').style.display='none'; g('ob-join').style.display='none'; g('ob-create').style.display=''; }
+function showOBJoin() { g('ob-main').style.display='none'; g('ob-create').style.display='none'; g('ob-join').style.display=''; }
+
+async function doOBCreate() {
+  const name=g('ob-cp-name').value.trim(), pts=g('ob-cp-pts').value.trim()||'points', date=g('ob-cp-date').value;
+  const err=g('ob-create-err'); err.style.display='none';
+  if(!name){err.textContent='Enter a project name';err.style.display='';return;}
+  if(!date){err.textContent='Pick a party date';err.style.display='';return;}
+  const res=await sb.ins('projects',{name,point_name:pts,created_by:st.userId});
+  const proj=Array.isArray(res)?res[0]:res;
+  if(!proj?.id){err.textContent='Error creating project — try again';err.style.display='';return;}
+  await sb.ins('project_members',{project_id:proj.id,user_id:st.userId,display_name:'Party Person'});
+  await sb.ins('party_dates',{project_id:proj.id,party_date:date,label:name});
+  st.projects.push({...proj,myDN:'Party Person'});
+  setProj(proj.id); await loadProjData(proj.id);
+  g('onboarding-screen').style.display='none'; showApp();
+}
+
+async function doOBJoin() {
+  const code=g('ob-join-code').value.trim().toLowerCase();
+  const err=g('ob-join-err'); err.style.display='none';
+  if(!code)return;
+  const res=await sb.q('projects',{select:'*',filter:'invite_code=eq.'+code});
+  if(!Array.isArray(res)||!res.length){err.textContent='Invalid invite code';err.style.display='';return;}
+  const proj=res[0];
+  await sb.ins('project_members',{project_id:proj.id,user_id:st.userId,display_name:'Party Person'});
+  st.projects.push({...proj,myDN:'Party Person'});
+  setProj(proj.id); await loadProjData(proj.id);
+  g('onboarding-screen').style.display='none'; showApp();
+}
+async function doLogout() { await sb.signOut(); localStorage.clear(); location.reload(); }
+function toggleDark() { const d=document.body.classList.toggle('dark'); localStorage.setItem('up_dark',d?'1':'0'); g('dark-tgl').classList.toggle('on',d); if(st.userId)sb.upd('users','id=eq.'+st.userId,{dark_mode:d}); }
+function initDark() { const s=localStorage.getItem('up_dark'); const d=s!==null?s==='1':true; document.body.classList.toggle('dark',d); const t=g('dark-tgl'); if(t)t.classList.toggle('on',d); }
+
+// ============================================================
+// NAVIGATION & MODALS
+// ============================================================
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  g('page-'+name).classList.add('active');
+  ['today','party','stats','profile'].forEach((p,i)=>{ if(p===name)document.querySelectorAll('.nav-item')[i]?.classList.add('active'); });
+  if(name==='party')renderParty();
+  if(name==='stats')renderStats();
+  if(name==='profile')renderProfile();
+}
+function openM(id){ g(id).classList.add('open'); }
+function closeM(id){ g(id).classList.remove('open'); }
+
+function updateProjUI() {
+  const name=st.activeProject?'📍 '+st.activeProject.name:'No project';
+  ['today-proj','party-proj','stats-proj'].forEach(id=>{const el=g(id);if(el)el.textContent=name;});
+}
+
+function showSwitcher() {
+  g('sw-list').innerHTML=st.projects.map(p=>
+    `<div class="rcard" onclick="switchProj('${p.id}')" style="cursor:pointer;margin-bottom:8px;">
+      <div class="rcard-info"><div class="rcard-name">${p.name}</div><div class="rcard-detail">${p.point_name}</div></div>
+      ${p.id===st.activeProjectId?'<span class="pill pill-lime">Active</span>':''}
+    </div>`
+  ).join('')||emptyHTML('','No projects yet','');
+  openM('m-switcher');
+}
+
+async function switchProj(id) {
+  setProj(id); await loadProjData(id); await loadTeamHabits(); await loadCompletions(viewStr());
+  closeM('m-switcher'); updateProjUI(); renderToday(); renderParty(); renderStats(); renderProfile();
+  toast('Project switched','📍');
+}
+
+// ============================================================
+// DATE STRIP
+// ============================================================
+function buildStrip() {
+  const strip=g('ds'); if(!strip)return;
+  const today=todayStr(), view=viewStr();
+  const period=getPeriod();
+  let start=period?period.start:addDays(today,-13);
+  const cap=addDays(today,-60); if(start<cap)start=cap;
+  const dates=[]; let cur=start;
+  while(cur<=today){dates.push(cur);cur=addDays(cur,1);}
+  const DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  strip.innerHTML=dates.map(d=>{
+    const dt=new Date(d+'T00:00:00');
+    const cls=['dp',d===today?'is-today':'',d===view?'is-sel':''].filter(Boolean).join(' ');
+    return `<button class="${cls}" onclick="selectDate('${d}')"><span class="dp-dow">${DOW[dt.getDay()]}</span><span class="dp-num">${dt.getDate()}</span></button>`;
+  }).join('');
+  requestAnimationFrame(()=>{
+    const sel=strip.querySelector('.is-sel')||strip.querySelector('.is-today');
+    if(sel){const w=g('dsw');w.scrollLeft+=sel.getBoundingClientRect().left-w.getBoundingClientRect().left-w.clientWidth/2+sel.clientWidth/2;}
+  });
+}
+
+async function selectDate(d) {
+  st.viewingDate=d===todayStr()?null:d;
+  await loadCompletions(viewStr());
+  buildStrip(); renderHabits(); renderTeam(); updateHabitProgress(); updatePastBanner();
+}
+function jumpToday(){selectDate(todayStr());}
+function updatePastBanner(){
+  const b=g('past-banner'); if(!b)return;
+  if(isToday()){b.style.display='none';return;}
+  b.style.display='';
+  g('past-txt').textContent='Viewing '+new Date(viewStr()+'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+}
+
+// ============================================================
+// TODAY PAGE
+// ============================================================
+function getPeriod() {
+  if (!st.partyDates||!st.partyDates.length) return null;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const sorted=[...st.partyDates].sort((a,b)=>new Date(a.party_date)-new Date(b.party_date));
+  const next=sorted.find(d=>new Date(d.party_date+'T00:00:00')>=today);
+  if (!next) return null;
+  const past=sorted.filter(d=>new Date(d.party_date+'T00:00:00')<today);
+  const created=st.activeProject?.created_at?.split('T')[0]||'2020-01-01';
+  const lastParty=past.length>0?past[past.length-1].party_date:null;
+  const start=lastParty?( lastParty<created?lastParty:created):created;
+  return {start, end:next.party_date, label:next.label||fmtDate(next.party_date)};
+}
+
+function allOverdue() {
+  if (!st.partyDates||!st.partyDates.length) return true;
+  const today=new Date(); today.setHours(0,0,0,0);
+  return !st.partyDates.some(d=>new Date(d.party_date+'T00:00:00')>=today);
+}
+
+function nextPartyDate() {
+  const today=new Date(); today.setHours(0,0,0,0);
+  return [...(st.partyDates||[])].filter(d=>new Date(d.party_date+'T00:00:00')>=today).sort((a,b)=>new Date(a.party_date)-new Date(b.party_date))[0]||null;
+}
+
+function renderToday() {
+  const now=new Date();
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  g('today-sub').textContent=DAYS[now.getDay()]+', '+MONS[now.getMonth()]+' '+now.getDate();
+  const h=now.getHours();
+  g('greet-label').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  g('greet-name').textContent=st.displayName||'Party Person';
+  g('bal-unit-label').textContent=pname()+' balance';
+  g('today-bal').textContent=fmt(ledgerStats().myBal);
+
+  const next=nextPartyDate();
+  const cd=g('today-countdown');
+  if(next){
+    const pd=new Date(next.party_date+'T00:00:00'),td=new Date();td.setHours(0,0,0,0);
+    const dl=Math.round((pd-td)/86400000);
+    cd.textContent=dl===0?'🎊 Party day! '+(next.label||''):dl===1?'1 day until next party':dl+' days until '+(next.label||'next party');
+    cd.style.display='';
+  } else cd.style.display='none';
+
+  g('overdue-banner').style.display=allOverdue()?'':'none';
+  buildStrip();
+  updatePastBanner();
+  renderHabits();
+  renderTeam();
+  updateHabitProgress();
+}
+
+function projHabits() {
+  if(!st.activeProjectId) return st.habits;
+  return st.habits.filter(h=>h.habit_projects&&h.habit_projects.some(hp=>hp.project_id===st.activeProjectId));
+}
+
+function renderHabits() {
+  const c=g('habits-list');
+  const habits=projHabits(), date=viewStr();
+  if(!habits.length){
+    c.innerHTML=emptyHTML('✨','No habits linked','Add a habit and link it to '+(st.activeProject?.name||'a project'));
+    return;
+  }
+  c.innerHTML=habits.map(h=>{
+    const done=!!st.completions[h.id+'_'+date];
+    const combo=h.is_combo&&h.combo_parts?.length>0;
+    const parts=combo?'<div class="combo-parts">'+[...h.combo_parts].sort((a,b)=>a.sort_order-b.sort_order).map(p=>'<div class="combo-part"><div class="cdot"></div>'+p.name+'</div>').join('')+'</div>':'';
+    const safeName=h.name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return `<div class="habit-row" onclick="toggleH('${h.id}')">
+      <div class="hc${done?' done':''}" id="hc-${h.id}">${done?U_WHITE:''}</div>
+      <div class="h-info"><div class="h-name">${h.name}</div><div class="h-pts">+${h.points_per_completion} ${pname()}</div>${parts}</div>
+      <button style="padding:6px;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;flex-shrink:0;" onclick="event.stopPropagation();showHabitAction('${h.id}','${safeName}')">···</button>
+    </div>`;
+  }).join('');
+}
+
+async function renderTeam() {
+  const wrap=g('team-wrap');
+  if(!st.activeProjectId||st.projectMembers.length<=1){wrap.style.display='none';return;}
+  if(!st.teamHabits.length) await loadTeamHabits();
+  if(!st.teamHabits.length){wrap.style.display='none';return;}
+  wrap.style.display='';
+  const btn=g('team-btn');
+  btn.classList.toggle('open',st.showTeam);
+  const list=g('team-list');
+  list.style.display=st.showTeam?'':'none';
+  if(!st.showTeam)return;
+  const date=viewStr();
+  const byMem={};
+  st.teamHabits.forEach(h=>{if(!byMem[h.user_id])byMem[h.user_id]=[];byMem[h.user_id].push(h);});
+  list.innerHTML=Object.entries(byMem).map(([uid,habits])=>{
+    const dn=dname(uid);
+    const rows=habits.map(h=>{
+      const done=!!st.teamCompletions[h.id+'_'+date];
+      return `<div class="habit-row ro">
+        <div class="team-u">${teamU(done)}</div>
+        <div class="h-info"><div class="h-name">${h.name}</div><div class="h-member">${dn}</div></div>
+      </div>`;
+    }).join('');
+    return '<div class="card" style="padding:0 16px;margin-bottom:10px;">'+rows+'</div>';
+  }).join('');
+}
+
+function toggleTeam() { st.showTeam=!st.showTeam; renderTeam(); }
+
+function updateHabitProgress() {
+  const habits=projHabits(), date=viewStr();
+  let done=0; habits.forEach(h=>{if(st.completions[h.id+'_'+date])done++;});
+  const pct=habits.length>0?Math.round(done/habits.length*100):0;
+  g('today-pct').textContent=pct+'%';
+  g('today-bar').style.width=pct+'%';
+  const lbl=g('progress-date-lbl');
+  if(lbl) lbl.textContent=isToday()?'today':new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+
+async function toggleH(hid) {
+  const date=viewStr(), key=hid+'_'+date;
+  const done=!!st.completions[key];
+  const habit=st.habits.find(h=>h.id===hid);
+  const el=g('hc-'+hid);
+  if(!done) {
+    st.completions[key]=true;
+    el.className='hc done bounce-in'; el.innerHTML=U_WHITE;
+    await sb.ins('habit_completions',{habit_id:hid,user_id:st.userId,completed_date:date});
+    if(st.activeProjectId&&habit) {
+      await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_habit',points:parseFloat(habit.points_per_completion),activity_date:date,habit_id:hid});
+      st.ledger.unshift({user_id:st.userId,entry_type:'earned_habit',points:habit.points_per_completion,activity_date:date,habit_id:hid,habits:{name:habit.name}});
+    }
+    toast('+'+( habit?.points_per_completion||1)+' '+pname(),'✷');
+  } else {
+    delete st.completions[key]; el.className='hc'; el.innerHTML='';
+    await sb.del('habit_completions','habit_id=eq.'+hid+'&user_id=eq.'+st.userId+'&completed_date=eq.'+date);
+    if(st.activeProjectId&&habit) {
+      const ds=date+'T00:00:00', de=date+'T23:59:59';
+      await sb.del('point_ledger','habit_id=eq.'+hid+'&user_id=eq.'+st.userId+'&project_id=eq.'+st.activeProjectId+'&entry_type=eq.earned_habit&created_at=gte.'+ds+'&created_at=lte.'+de);
+      st.ledger=st.ledger.filter(e=>!(e.habit_id===hid&&e.entry_type==='earned_habit'&&e.activity_date===date&&e.user_id===st.userId));
+    }
+  }
+  const bal=fmt(ledgerStats().myBal);
+  g('today-bal').textContent=bal; g('party-bal').textContent=bal;
+  updateHabitProgress();
+}
+
+// ============================================================
+// PARTY PAGE
+// ============================================================
+function renderParty() {
+  if(!st.activeProject){
+    ['party-rewards','party-goals','party-hist'].forEach(id=>{
+      const el=g(id); if(el)el.innerHTML=emptyHTML('','No project','Select a project to get started.');
+    });
+    return;
+  }
+  const {myBal} = ledgerStats();
+  g('party-bal').textContent=fmt(myBal);
+  g('party-bal-lbl').textContent='your '+pname()+' balance';
+
+  // Rewards
+  const rc=g('party-rewards');
+  rc.innerHTML=st.projectRewards.length?st.projectRewards.map(r=>`
+    <div class="rcard">
+      <div class="rcard-icon" style="background:${r.chance_pct<100?'var(--rose-soft)':'var(--primary-soft)'};">${r.chance_pct<100?'🎰':'🎁'}</div>
+      <div class="rcard-info"><div class="rcard-name">${r.name}</div><div class="rcard-detail">${r.point_value} ${pname()} · ${r.chance_pct}% chance</div></div>
+      <button class="btn btn-sun btn-sm" onclick="showRedeem('${r.id}')">Redeem</button>
+    </div>`).join(''):emptyHTML('','No rewards yet','Add some rewards!');
+
+  // Goals
+  const gc=g('party-goals');
+  const mine=st.projectGoals.filter(x=>x.user_id===st.userId);
+  const others=st.projectGoals.filter(x=>x.user_id!==st.userId);
+  gc.innerHTML=[...mine,...others].map(gl=>{
+    const isMe=gl.user_id===st.userId, done=gl.completed;
+    const r=gl.rewards, rt=r?r.name+' ('+(r.chance_pct<100?r.chance_pct+'% chance':'guaranteed')+')':'';
+    const dn=isMe?'You':dname(gl.user_id);
+    return `<div class="rcard" onclick="${isMe&&!done?`completeGoal('${gl.id}')`:''}" style="opacity:${done?.6:1};cursor:${isMe&&!done?'pointer':'default'}">
+      <div class="rcard-icon" style="background:${done?'var(--lime-soft)':'var(--surface-alt)'};">${done?'✅':'🎯'}</div>
+      <div class="rcard-info"><div class="rcard-name">${gl.name}</div><div class="rcard-detail">${dn}${rt?' · '+rt:''}</div></div>
+      ${done?'<span class="pill pill-lime">Done</span>':''}
+    </div>`;
+  }).join('')||emptyHTML('','No goals yet','');
+
+  // Spend history — last 5
+  const spends=st.ledger.filter(e=>e.entry_type==='spent').slice(0,5);
+  g('party-hist').innerHTML=spends.length?spends.map(e=>{
+    const dn=dname(e.user_id), label=e.note||e.rewards?.name||'Redemption';
+    return `<div class="history-row">
+      <div class="h-dot" style="background:var(--rose);"></div>
+      <div style="flex:1;"><div class="h-lbl">${label}</div><div class="h-sub">${dn} · ${e.activity_date||''}</div></div>
+      <div class="h-pts" style="color:var(--rose);">-${fmt(e.points)}</div>
+    </div>`;
+  }).join(''):emptyHTML('','No redemptions yet','');
+}
+
+async function completeGoal(gid) {
+  const gl=st.projectGoals.find(x=>x.id===gid); if(!gl||gl.completed)return;
+  await sb.upd('goals','id=eq.'+gid,{completed:true,completed_at:new Date().toISOString()});
+  gl.completed=true;
+  const r=gl.rewards;
+  if(r){
+    if(r.chance_pct>=100){
+      await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_goal',points:parseFloat(r.point_value),activity_date:todayStr(),goal_id:gid,reward_id:gl.reward_id});
+      st.ledger.unshift({user_id:st.userId,entry_type:'earned_goal',points:r.point_value,activity_date:todayStr(),rewards:{name:r.name}});
+      toast('Goal done! +'+r.point_value+' '+pname(),'🎯');
+    } else {
+      await sb.ins('raffle_tickets',{project_id:st.activeProjectId,user_id:st.userId,reward_id:gl.reward_id,goal_id:gid});
+      toast('Goal done! Raffle ticket earned 🎟️','🎯');
+    }
+  } else toast('Goal completed!','✅');
+  renderParty();
+}
+
+function showAddReward() {
+  g('ar-unit').textContent='(in '+pname()+')';
+  ['ar-name','ar-val'].forEach(id=>g(id).value='');
+  g('ar-chance').value='100';
+  openM('m-add-reward');
+}
+
+async function doAddReward() {
+  const name=g('ar-name').value.trim(), val=parseFloat(g('ar-val').value), chance=parseFloat(g('ar-chance').value)||100;
+  if(!name||isNaN(val))return toast('Fill in name and value','⚠️');
+  const res=await sb.ins('rewards',{project_id:st.activeProjectId,name,point_value:val,chance_pct:Math.min(100,Math.max(1,chance))});
+  const r=Array.isArray(res)?res[0]:res;
+  if(!r?.id)return toast('Error — check your login','❌');
+  st.projectRewards.push(r); st._rewardMap.set(r.id, r);
+  closeM('m-add-reward'); renderParty(); toast('Reward added!','🎁');
+}
+
+function showAddGoal() {
+  g('ag-reward').innerHTML='<option value="">No reward</option>'+st.projectRewards.map(r=>`<option value="${r.id}">${r.name} (${r.chance_pct}%)</option>`).join('');
+  g('ag-name').value=''; openM('m-add-goal');
+}
+
+async function doAddGoal() {
+  const name=g('ag-name').value.trim(), rid=g('ag-reward').value||null; if(!name)return;
+  const res=await sb.ins('goals',{project_id:st.activeProjectId,user_id:st.userId,name,reward_id:rid});
+  const gl=Array.isArray(res)?res[0]:res;
+  if(!gl?.id)return toast('Error adding goal','❌');
+  const rw=rid?st._rewardMap.get(rid)||null:null;
+  st.projectGoals.push({...gl,rewards:rw});
+  closeM('m-add-goal'); renderParty(); toast('Goal added!','🎯');
+}
+
+function showRedeem(rewardId) {
+  const r = rewardId ? st._rewardMap.get(rewardId) : null;
+  st._redeemReward = r || null;
+  g('redeem-title').textContent = r ? 'Redeem: '+r.name : 'Manual Redemption';
+  g('redeem-avail').textContent = fmt(ledgerStats().myBal);
+  g('redeem-unit').textContent = pname();
+  g('redeem-pts').value = r ? r.point_value : '';
+  g('redeem-date').value = todayStr();
+  g('redeem-note').value = r ? r.name : '';
+  openM('m-redeem');
+}
+
+function showManualSpend(){ showRedeem(null); }
+
+async function doRedeem() {
+  const amount=parseFloat(g('redeem-pts').value), date=g('redeem-date').value, note=g('redeem-note').value.trim();
+  if(!amount||amount<=0)return toast('Enter a valid amount','⚠️');
+  if(!date)return toast('Enter a date','⚠️');
+  if(amount>ledgerStats().myBal)return toast('Not enough '+pname(),'⚠️');
+  const res=await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'spent',points:amount,activity_date:date,reward_id:st._redeemReward?.id||null,note:note||null});
+  const row=Array.isArray(res)?res[0]:res;
+  st.ledger.unshift({id:row?.id,user_id:st.userId,entry_type:'spent',points:amount,activity_date:date,note,rewards:st._redeemReward?{name:st._redeemReward.name}:null});
+  closeM('m-redeem'); toast(fmt(amount)+' '+pname()+' redeemed!','💸');
+  renderParty(); g('today-bal').textContent=fmt(ledgerStats().myBal);
+}
+
+async function deleteRedemption(id) {
+  if(!confirm('Delete this redemption?'))return;
+  await sb.del('point_ledger','id=eq.'+id);
+  st.ledger=st.ledger.filter(e=>e.id!==id);
+  renderParty(); renderStats();
+  g('today-bal').textContent=fmt(ledgerStats().myBal);
+  toast('Redemption deleted','🗑️');
+}
+
+// ============================================================
+// STATS PAGE
+// ============================================================
+async function renderStats() {
+  if(!st.activeProject)return;
+  const {myBal, grpEarned, myEarned} = ledgerStats();
+  const pnm=st.activeProject.point_name;
+
+  // Balances
+  const grpSpent=st.ledger.filter(x=>x.entry_type==='spent').reduce((s,x)=>s+parseFloat(x.points),0);
+  const grpBal=grpEarned-grpSpent;
+  g('s-mybln').textContent=fmt(myBal); g('s-mybln-l').textContent='your '+pnm;
+  g('s-grpbln').textContent=fmt(grpBal); g('s-grpbln-l').textContent='group '+pnm;
+
+  // Period earnings
+  const period=getPeriod();
+  if(period){
+    const periodEntries=st.ledger.filter(e=>e.entry_type!=='spent'&&e.activity_date>=period.start&&e.activity_date<=period.end);
+    const periodMe=periodEntries.filter(e=>e.user_id===st.userId).reduce((s,e)=>s+parseFloat(e.points),0);
+    const periodGrp=periodEntries.reduce((s,e)=>s+parseFloat(e.points),0);
+    g('s-period-me').textContent=fmt(periodMe); g('s-period-me-l').textContent='earned by you';
+    g('s-period-grp').textContent=fmt(periodGrp); g('s-period-grp-l').textContent='earned by group';
+  } else {
+    g('s-period-me').textContent='—'; g('s-period-grp').textContent='—';
+  }
+
+  // Lifetime earnings
+  g('s-life-me').textContent=fmt(myEarned); g('s-life-me-l').textContent='earned by you';
+  g('s-life-grp').textContent=fmt(grpEarned); g('s-life-grp-l').textContent='earned by group';
+
+  // Completion rates
+  const ratesSec=g('rates-sec');
+  const myHabits=st.habits.filter(h=>h.habit_projects?.some(hp=>hp.project_id===st.activeProjectId));
+  if(myHabits.length&&period){
+    ratesSec.style.display=''; g('rates-title').textContent='Completion — Current Period';
+    const cd=await sb.q('habit_completions',{select:'habit_id,completed_date',filter:'user_id=eq.'+st.userId+'&completed_date=gte.'+period.start+'&completed_date=lte.'+period.end});
+    const counts={}; (Array.isArray(cd)?cd:[]).forEach(c=>{counts[c.habit_id]=(counts[c.habit_id]||0)+1;});
+    const s=new Date(period.start+'T00:00:00'), e=new Date(period.end+'T00:00:00');
+    const dayCount=Math.max(1,Math.round((Math.min(Date.now(),e.getTime())-s.getTime())/86400000)+1);
+    g('rates-list').innerHTML=myHabits.map(h=>{
+      const n=counts[h.id]||0, pct=Math.min(100,Math.round(n/dayCount*100));
+      return `<div class="rate-row"><div class="rate-name">${h.name}</div><div class="rate-bar"><div class="rate-fill" style="width:${pct}%"></div></div><div class="rate-pct">${pct}%</div></div>`;
+    }).join('');
+  } else ratesSec.style.display='none';
+
+  renderPartyDatesList();
+}
+
+function renderPartyDatesList() {
+  const c=g('party-dates-list');
+  if(!st.partyDates.length){c.innerHTML=emptyHTML('','No party dates yet','Add one to start tracking periods.');return;}
+  const today=new Date(); today.setHours(0,0,0,0);
+  const past=[...st.partyDates].filter(d=>new Date(d.party_date+'T00:00:00')<today).sort((a,b)=>new Date(b.party_date)-new Date(a.party_date));
+  const future=[...st.partyDates].filter(d=>new Date(d.party_date+'T00:00:00')>=today).sort((a,b)=>new Date(a.party_date)-new Date(b.party_date));
+  // Pick closest 5: guarantee at least 1 past + 1 future if both exist, fill remaining slots by proximity
+  let shown=[];
+  if(past.length&&future.length){
+    shown=[past[0],future[0]];
+    const remaining=[...past.slice(1),...future.slice(1)].sort((a,b)=>{
+      const da=Math.abs(new Date(a.party_date+'T00:00:00')-today);
+      const db=Math.abs(new Date(b.party_date+'T00:00:00')-today);
+      return da-db;
+    });
+    shown=[...shown,...remaining].slice(0,5);
+  } else {
+    shown=[...(past.length?past:future)].slice(0,5);
+  }
+  shown.sort((a,b)=>new Date(b.party_date)-new Date(a.party_date));
+  const mostRecentPastId=past[0]?.id, nextUpcomingId=future[0]?.id;
+  c.innerHTML=shown.map(d=>{
+    const safeLabel=(d.label||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    const tag=d.id===nextUpcomingId?'<span class="pill pill-lime" style="margin-left:8px;">Next</span>':d.id===mostRecentPastId?'<span class="pill pill-sand" style="margin-left:8px;">Most Recent</span>':'';
+    return `<div class="rcard" style="margin-bottom:8px;">
+      <div class="rcard-info"><div class="rcard-name">${d.label||'Party Date'}${tag}</div><div class="rcard-detail">${fmtDate(d.party_date)}</div></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="editPartyDate('${d.id}','${d.party_date}','${safeLabel}')">Edit</button>
+        <button class="btn btn-sm" style="background:var(--rose-soft);color:#B91C1C;border:none;" onclick="deletePartyDate('${d.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showAddPartyDate() {
+  g('apd-title').textContent='Add Party Date';
+  g('apd-date').value=''; g('apd-label').value=''; g('apd-id').value='';
+  openM('m-party-date');
+}
+
+function editPartyDate(id,date,label) {
+  g('apd-title').textContent='Edit Party Date';
+  g('apd-date').value=date; g('apd-label').value=label; g('apd-id').value=id;
+  openM('m-party-date');
+}
+
+async function doSavePartyDate() {
+  const date=g('apd-date').value, label=g('apd-label').value.trim(), eid=g('apd-id').value;
+  if(!date)return toast('Pick a date','⚠️');
+  if(!st.activeProjectId&&!eid)return toast('No active project','⚠️');
+  if(eid){
+    const res=await sb.upd('party_dates','id=eq.'+eid,{party_date:date,label:label||null});
+    if(res?.error||res?.code)return toast('Error: '+(res.message||res.error),'❌');
+    const idx=st.partyDates.findIndex(d=>d.id===eid);
+    if(idx>=0)st.partyDates[idx]={...st.partyDates[idx],party_date:date,label:label||null};
+    toast('Date updated!','📅');
+  } else {
+    const res=await sb.ins('party_dates',{project_id:st.activeProjectId,party_date:date,label:label||null});
+    const pd=Array.isArray(res)?res[0]:res;
+    if(!pd?.id)return toast('Error: '+(res?.message||res?.error||'check console'),'❌');
+    st.partyDates.push(pd); toast('Party date added!','📅');
+  }
+  closeM('m-party-date');
+  g('overdue-banner').style.display=allOverdue()?'':'none';
+  buildStrip(); renderPartyDatesList(); renderToday();
+}
+
+async function deletePartyDate(id) {
+  await sb.del('party_dates','id=eq.'+id);
+  st.partyDates=st.partyDates.filter(d=>d.id!==id);
+  g('overdue-banner').style.display=allOverdue()?'':'none';
+  buildStrip(); renderPartyDatesList(); renderToday(); renderStats();
+  toast('Party date deleted','🗑️');
+}
+
+// ============================================================
+// HABITS MANAGEMENT
+// ============================================================
+function showHabitAction(hid,hname){
+  st._habitId=hid; g('ha-title').textContent=hname; g('del-name').textContent=hname; openM('m-habit-action');
+}
+
+function showLogPast() {
+  const h=st.habits.find(x=>x.id===st._habitId); if(!h)return;
+  g('log-past-name').textContent=h.name+' · '+h.points_per_completion+' '+pname()+' per completion';
+  g('log-past-date').value=addDays(todayStr(),-1);
+  closeM('m-habit-action'); openM('m-log-past');
+}
+
+async function doLogPast() {
+  const date=g('log-past-date').value;
+  if(!date)return toast('Pick a date','⚠️');
+  if(date>=todayStr())return toast('Use today\'s checklist for today','⚠️');
+  const h=st.habits.find(x=>x.id===st._habitId); if(!h)return;
+  const key=h.id+'_'+date;
+  if(st.completions[key])return toast('Already logged for this date','⚠️');
+  await sb.ins('habit_completions',{habit_id:h.id,user_id:st.userId,completed_date:date});
+  if(st.activeProjectId){
+    const res=await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_habit',points:parseFloat(h.points_per_completion),activity_date:date,habit_id:h.id});
+    const row=Array.isArray(res)?res[0]:res;
+    st.ledger.unshift({id:row?.id,user_id:st.userId,entry_type:'earned_habit',points:h.points_per_completion,activity_date:date,habit_id:h.id,habits:{name:h.name}});
+  }
+  closeM('m-log-past');
+  g('today-bal').textContent=fmt(ledgerStats().myBal);
+  g('party-bal').textContent=fmt(ledgerStats().myBal);
+  renderStats();
+  toast('+'+h.points_per_completion+' '+pname()+' logged for '+fmtDate(date),'✷');
+  st._habitId=null;
+}
+
+function showModifyPoints() {
+  const h=st.habits.find(x=>x.id===st._habitId); if(!h)return;
+  g('mp-val').value=h.points_per_completion;
+  closeM('m-habit-action'); openM('m-modify-pts');
+}
+
+async function doModifyPoints() {
+  const newPts=parseFloat(g('mp-val').value);
+  if(!newPts||newPts<=0)return toast('Enter a valid value','⚠️');
+  const h=st.habits.find(x=>x.id===st._habitId); if(!h)return;
+  const oldPts=parseFloat(h.points_per_completion);
+  if(newPts===oldPts){closeM('m-modify-pts');st._habitId=null;return;}
+  // Update habit
+  await sb.upd('habits','id=eq.'+h.id,{points_per_completion:newPts});
+  h.points_per_completion=newPts;
+  // Update all earned_habit ledger entries for this habit
+  if(st.activeProjectId){
+    await sb.upd('point_ledger','habit_id=eq.'+h.id+'&entry_type=eq.earned_habit&project_id=eq.'+st.activeProjectId,{points:newPts});
+    st.ledger.forEach(e=>{if(e.habit_id===h.id&&e.entry_type==='earned_habit')e.points=newPts;});
+  }
+  closeM('m-modify-pts');
+  renderHabits();
+  g('today-bal').textContent=fmt(ledgerStats().myBal);
+  g('party-bal').textContent=fmt(ledgerStats().myBal);
+  renderStats();
+  toast('Point value updated!','✏️');
+  st._habitId=null;
+}
+
+function showDelConfirm(){closeM('m-habit-action');openM('m-del-confirm');}
+
+async function doDelete() {
+  if(!st._habitId)return;
+  const hid=st._habitId;
+  await Promise.all([
+    sb.del('habit_completions','habit_id=eq.'+hid),
+    sb.del('habit_projects','habit_id=eq.'+hid),
+    sb.del('combo_parts','habit_id=eq.'+hid),
+    sb.del('point_ledger','habit_id=eq.'+hid+'&entry_type=eq.earned_habit')
+  ]);
+  await sb.del('habits','id=eq.'+hid);
+  st.habits=st.habits.filter(h=>h.id!==hid);
+  st.ledger=st.ledger.filter(e=>!(e.habit_id===hid&&e.entry_type==='earned_habit'));
+  closeM('m-del-confirm'); renderHabits(); updateHabitProgress();
+  toast('Habit deleted — points removed','🗑️'); st._habitId=null;
+}
+
+function showAddHabit() {
+  g('ah-name').value=''; g('ah-pts').value='1';
+  g('ah-combo-parts').innerHTML=''; g('ah-combo-sec').style.display='none'; g('ah-combo-tgl').classList.remove('on');
+  openM('m-add-habit');
+}
+
+let cpCount=0;
+function addComboPart(){cpCount++;const c=g('ah-combo-parts');const d=document.createElement('div');d.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px;';d.innerHTML='<div class="cdot"></div><input type="text" placeholder="e.g. no dessert" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:Georgia,serif;font-size:14px;outline:none;background:var(--surface);color:var(--text);" data-cp="'+cpCount+'">';c.appendChild(d);}
+function toggleCombo(){const t=g('ah-combo-tgl');t.classList.toggle('on');g('ah-combo-sec').style.display=t.classList.contains('on')?'':'none';if(t.classList.contains('on')&&!g('ah-combo-parts').children.length){addComboPart();addComboPart();}}
+
+async function doAddHabit() {
+  const name=g('ah-name').value.trim(); if(!name)return;
+  const pts=parseFloat(g('ah-pts').value)||1;
+  const isCombo=g('ah-combo-tgl').classList.contains('on');
+  const res=await sb.ins('habits',{user_id:st.userId,name,points_per_completion:pts,is_combo:isCombo,is_active:true});
+  const h=Array.isArray(res)?res[0]:res;
+  if(!h?.id)return toast('Error adding habit — check your login','❌');
+  let cp=[];
+  if(isCombo){const ins=document.querySelectorAll('[data-cp]');let o=0;for(const i of ins)if(i.value.trim()){await sb.ins('combo_parts',{habit_id:h.id,name:i.value.trim(),sort_order:o++});cp.push({name:i.value.trim(),sort_order:o-1});}}
+  if(st.activeProjectId) await sb.ins('habit_projects',{habit_id:h.id,project_id:st.activeProjectId});
+  h.combo_parts=cp; h.habit_projects=st.activeProjectId?[{project_id:st.activeProjectId}]:[];
+  st.habits.push(h); closeM('m-add-habit'); renderHabits(); updateHabitProgress(); toast('Habit added!','✅');
+}
+
+// ============================================================
+// PROFILE PAGE
+// ============================================================
+function renderProfile() {
+  g('prof-user').textContent=st.username||'—';
+  g('prof-email').textContent=st.email||'No email set';
+  g('email-btn').textContent=st.email?'Change':'Add';
+  g('prof-active').textContent=st.activeProject?.name||'None';
+  const t=g('dark-tgl'); if(t)t.classList.toggle('on',document.body.classList.contains('dark'));
+
+  const dnc=g('prof-dnames');
+  if(!st.projects.length){dnc.innerHTML='<div style="font-size:13px;color:var(--text3);">Join a project to set your display name.</div>';}
+  else{dnc.innerHTML=st.projects.map(p=>{
+    const dn=p.myDN||'Party Person';
+    const safeDN=dn.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    const safeName=p.name.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div><div style="font-size:12px;color:var(--text3);">${p.name}</div><div style="font-weight:600;font-size:15px;">${dn}</div></div>
+      <button class="btn btn-outline btn-sm" onclick="showEditDN('${p.id}','${safeDN}','${safeName}')">Edit</button>
+    </div>`;
+  }).join('');}
+
+  g('prof-projects').innerHTML=st.projects.map(p=>`
+    <div class="rcard" style="margin-bottom:8px;cursor:pointer;" onclick="openProjDetail('${p.id}')">
+      <div class="rcard-icon" style="background:var(--primary-soft);">🎯</div>
+      <div class="rcard-info"><div class="rcard-name">${p.name}</div><div class="rcard-detail">${p.point_name} · tap to manage</div></div>
+      ${p.id===st.activeProjectId?'<span class="pill pill-lime">Active</span>':''}
+    </div>`).join('')||'<div style="font-size:13px;color:var(--text3);">No projects yet.</div>';
+}
+
+function showEditDN(pid,current,projName){
+  g('dn-pid').value=pid; g('dn-val').value=current; g('dn-proj').textContent=projName; openM('m-edit-dn');
+}
+
+async function doUpdateDN(){
+  const pid=g('dn-pid').value, val=g('dn-val').value.trim()||'Party Person';
+  await sb.upd('project_members','project_id=eq.'+pid+'&user_id=eq.'+st.userId,{display_name:val});
+  const proj=st.projects.find(p=>p.id===pid); if(proj)proj.myDN=val;
+  if(pid===st.activeProjectId){st.displayName=val;g('greet-name').textContent=val;}
+  closeM('m-edit-dn'); renderProfile(); toast('Display name updated!','✏️');
+}
+
+function showEditEmail(){
+  g('email-m-title').textContent=st.email?'Change Email':'Add Email';
+  g('email-val').value=st.email||''; openM('m-edit-email');
+}
+
+async function doUpdateEmail(){
+  const email=g('email-val').value.trim();
+  if(email&&!email.includes('@'))return toast('Enter a valid email','⚠️');
+  await sb.upd('users','id=eq.'+st.userId,{email:email||null});
+  st.email=email||null; closeM('m-edit-email'); renderProfile(); toast('Email updated!','📧');
+}
+
+function showChangePw(){openM('m-change-pw');}
+
+async function doChangePw(){
+  const cur=g('cpw-cur').value, nw=g('cpw-new').value, e=g('cpw-err'); e.style.display='none';
+  if(nw.length<8){e.textContent='Min 8 characters';e.style.display='';return;}
+  const ck=await sb.signIn(st.username+'@uni.internal',cur);
+  if(ck.error){e.textContent='Current password incorrect';e.style.display='';return;}
+  const r=await sb.updPw(nw);
+  if(r.error){e.textContent=r.error.message||'Error';e.style.display='';return;}
+  toast('Password updated!','🔒'); closeM('m-change-pw');
+}
+
+// ============================================================
+// PROJECT MANAGEMENT
+// ============================================================
+function showCreateProj(){
+  ['cp-name','cp-pts','cp-date'].forEach(id=>g(id).value=''); openM('m-create-proj');
+}
+
+async function doCreateProj(){
+  const name=g('cp-name').value.trim(), pts=g('cp-pts').value.trim()||'points', date=g('cp-date').value;
+  if(!name)return toast('Enter a project name','⚠️');
+  if(!date)return toast('Enter a party date','⚠️');
+  const res=await sb.ins('projects',{name,point_name:pts,created_by:st.userId});
+  const proj=Array.isArray(res)?res[0]:res;
+  if(!proj?.id)return toast('Error creating project — check your login','❌');
+  await sb.ins('project_members',{project_id:proj.id,user_id:st.userId,display_name:'Party Person'});
+  await sb.ins('party_dates',{project_id:proj.id,party_date:date,label:name});
+  st.projects.push({...proj,myDN:'Party Person'});
+  setProj(proj.id); await loadProjData(proj.id); await loadTeamHabits();
+  closeM('m-create-proj'); renderAll(); toast(name+' created!','🎉');
+}
+
+function showJoinProj(){g('join-code').value='';g('join-err').style.display='none';openM('m-join-proj');}
+
+async function doJoinProj(){
+  const code=g('join-code').value.trim().toLowerCase(), err=g('join-err'); if(!code)return;
+  const res=await sb.q('projects',{select:'*',filter:'invite_code=eq.'+code});
+  if(!Array.isArray(res)||!res.length){err.textContent='Invalid invite code';err.style.display='';return;}
+  const proj=res[0];
+  if(st.projects.find(p=>p.id===proj.id)){err.textContent='Already a member';err.style.display='';return;}
+  await sb.ins('project_members',{project_id:proj.id,user_id:st.userId,display_name:'Party Person'});
+  st.projects.push({...proj,myDN:'Party Person'});
+  setProj(proj.id); await loadProjData(proj.id); await loadTeamHabits();
+  closeM('m-join-proj'); renderAll(); toast('Joined '+proj.name+'!','🎉');
+}
+
+async function openProjDetail(pid){
+  await loadProjData(pid);
+  const proj=st.projects.find(p=>p.id===pid); if(!proj)return;
+  g('pd-name').textContent=proj.name;
+  g('pd-code').textContent=(proj.invite_code||'').toUpperCase();
+  g('pd-members').innerHTML=st.projectMembers.map(m=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--primary-d);">${(m.display_name||'P').slice(0,2).toUpperCase()}</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:14px;">${m.display_name||'Party Person'}</div></div>
+      ${m.user_id===st.userId?'<span class="pill pill-sky" style="font-size:10px;">You</span>':''}
+    </div>`).join('');
+  const sortedDates=[...st.partyDates].sort((a,b)=>new Date(a.party_date)-new Date(b.party_date));
+  g('pd-dates').innerHTML=sortedDates.map(d=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div><div style="font-size:14px;font-weight:500;">${d.label||'Party Date'}</div><div style="font-size:12px;color:var(--text3);">${fmtDate(d.party_date)}</div></div>
+    </div>`).join('')||'<div style="font-size:13px;color:var(--text3);padding:8px 0;">No dates yet</div>';
+  openM('m-proj-detail');
+}
+
+function copyCode(){navigator.clipboard.writeText(g('pd-code').textContent).then(()=>toast('Copied!','📋'));}
+
+// ============================================================
+// PROJECT HISTORY
+// ============================================================
+function showHistory(){
+  if(!st.activeProjectId)return;
+  st.histAll=false; g('hist-scope-btn').textContent='Everyone';
+  renderHistory(); openM('m-history');
+}
+
+function toggleHistScope(){
+  st.histAll=!st.histAll; g('hist-scope-btn').textContent=st.histAll?'Just Me':'Everyone'; renderHistory();
+}
+
+function renderHistory(){
+  const c=g('hist-list');
+  let entries=st.histAll?st.ledger:st.ledger.filter(e=>e.user_id===st.userId);
+  entries=entries.slice(0,50);
+  if(!entries.length){c.innerHTML=emptyHTML('','No history yet','');return;}
+  c.innerHTML=entries.map(e=>{
+    const earn=e.entry_type!=='spent', dn=dname(e.user_id);
+    let label='';
+    if(e.entry_type==='earned_habit')label=e.habits?.name||'Habit';
+    else if(e.entry_type==='earned_goal')label=e.rewards?.name||'Goal';
+    else if(e.entry_type==='earned_raffle')label='Raffle: '+(e.rewards?.name||'');
+    else label=e.note||e.rewards?.name||'Redemption';
+    const canDelete=e.user_id===st.userId&&e.id;
+    return `<div class="history-row">
+      <div class="h-dot" style="background:${earn?'var(--lime)':'var(--rose)'};"></div>
+      <div style="flex:1;"><div class="h-lbl">${label}</div><div class="h-sub">${dn} · ${e.activity_date||''}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="h-pts" style="color:${earn?'var(--lime)':'var(--rose)'};">${earn?'+':'-'}${fmt(e.points)}</div>
+        ${canDelete?`<button onclick="deleteHistoryEntry('${e.id}')" style="background:var(--rose);border:none;border-radius:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;color:#fff;padding:0;">🗑︎</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function deleteHistoryEntry(id) {
+  if(!confirm('Delete this entry?'))return;
+  await sb.del('point_ledger','id=eq.'+id+'&user_id=eq.'+st.userId);
+  st.ledger=st.ledger.filter(e=>e.id!==id);
+  renderHistory();
+  g('today-bal').textContent=fmt(ledgerStats().myBal);
+  g('party-bal').textContent=fmt(ledgerStats().myBal);
+  renderStats();
+  toast('Entry deleted','🗑︎');
+}
+
+// ============================================================
+// RAFFLE
+// ============================================================
+async function drawRaffle(){
+  if(!st.activeProjectId)return;
+  const tickets=await sb.q('raffle_tickets',{select:'id,reward_id,rewards(name,point_value,chance_pct)',filter:'project_id=eq.'+st.activeProjectId+'&user_id=eq.'+st.userId});
+  const t=Array.isArray(tickets)?tickets:[];
+  const c=g('raffle-content');
+  if(!t.length){c.innerHTML=emptyHTML('🎟️','No tickets','Complete raffle goals to earn tickets.');openM('m-raffle');return;}
+  const by={};
+  t.forEach(tk=>{if(!by[tk.reward_id])by[tk.reward_id]={reward:tk.rewards,count:0};by[tk.reward_id].count++;});
+  let html='';
+  for(const [rid,{reward,count}] of Object.entries(by)){
+    const ch=parseFloat(reward.chance_pct),tc=Math.min(100,count*ch),won=Math.random()*100<tc;
+    html+=`<div style="text-align:center;padding:20px;"><div style="font-size:60px;margin-bottom:10px;">${won?'🎉':'😔'}</div><div style="font-family:Georgia,serif;font-style:italic;font-size:22px;color:${won?'var(--primary)':'var(--text3)'};">${won?'You won '+reward.name+'!':'Not this time...'}</div><div style="font-size:13px;color:var(--text3);margin-top:8px;">${count} ticket${count>1?'s':''} · ${tc.toFixed(0)}% chance</div></div>`;
+    if(won){
+      await sb.ins('raffle_draws',{project_id:st.activeProjectId,user_id:st.userId,reward_id:rid,tickets_count:count,win_probability:tc/100,won:true});
+      await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_raffle',points:parseFloat(reward.point_value),activity_date:todayStr(),reward_id:rid});
+      st.ledger.unshift({user_id:st.userId,entry_type:'earned_raffle',points:reward.point_value,activity_date:todayStr(),rewards:{name:reward.name}});
+    }
+  }
+  c.innerHTML=html; openM('m-raffle');
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => { initDark(); init(); });
+</script>
+</body>
+</html>
