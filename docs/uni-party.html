@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Uni Party</title>
 <style>
@@ -31,8 +31,8 @@ body{background:var(--bg);color:var(--text);font-family:Georgia,serif;font-size:
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .page{display:none;flex:1;flex-direction:column;overflow:hidden;}
 .page.active{display:flex;}
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px;}
-.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(239,245,249,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;padding:6px 0 20px;z-index:100;}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(140px + env(safe-area-inset-bottom));}
+.nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(239,245,249,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(20px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:Georgia,serif;font-size:0;transition:color 0.15s;}
 .nav-item.active{color:var(--primary);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
 .nav-icon{font-size:22px;line-height:1;}
