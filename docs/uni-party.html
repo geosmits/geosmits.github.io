@@ -31,7 +31,7 @@ body{background:var(--bg);color:var(--text);font-family:Georgia,serif;font-size:
 #app{height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 .page{display:none;flex:1;flex-direction:column;overflow:hidden;}
 .page.active{display:flex;}
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(140px + env(safe-area-inset-bottom));}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(200px + env(safe-area-inset-bottom));}
 .nav-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(239,245,249,0.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(20px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:Georgia,serif;font-size:0;transition:color 0.15s;}
 .nav-item.active{color:var(--primary);font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
@@ -838,8 +838,10 @@ async function doCheckUser() {
   if(!/^[a-zA-Z0-9._-]+$/.test(u))return authErr('Letters, numbers, . _ - only');
   const btn=g('auth-btn'); btn.disabled=true; btn.textContent='Checking...'; g('auth-err').style.display='none';
   const ex=await sb.rpc('username_exists',{p_username:u}); btn.disabled=false; btn.textContent='Continue';
+  // Normalise all possible shapes Supabase can return for a boolean RPC
+  const exists=ex===true||ex==='true'||(Array.isArray(ex)&&(ex[0]===true||ex[0]==='true'||Object.values(ex[0]||{})[0]===true));
   g('auth-s1').style.display='none';
-  if(ex===true||ex==='true'){ g('auth-name-a').textContent=u; g('auth-s2a').style.display=''; setTimeout(()=>g('auth-pw').focus(),50); }
+  if(exists){ g('auth-name-a').textContent=u; g('auth-s2a').style.display=''; setTimeout(()=>g('auth-pw').focus(),50); }
   else { g('auth-name-b').textContent=u; g('auth-s2b').style.display=''; setTimeout(()=>g('auth-new-pw').focus(),50); }
 }
 
@@ -1118,8 +1120,9 @@ async function toggleH(hid) {
     el.className='hc done bounce-in'; el.innerHTML=U_WHITE;
     await sb.ins('habit_completions',{habit_id:hid,user_id:st.userId,completed_date:date});
     if(st.activeProjectId&&habit) {
-      await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_habit',points:parseFloat(habit.points_per_completion),activity_date:date,habit_id:hid});
-      st.ledger.unshift({user_id:st.userId,entry_type:'earned_habit',points:habit.points_per_completion,activity_date:date,habit_id:hid,habits:{name:habit.name}});
+      const hlRes=await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_habit',points:parseFloat(habit.points_per_completion),activity_date:date,habit_id:hid});
+      const hlRow=Array.isArray(hlRes)?hlRes[0]:hlRes;
+      st.ledger.unshift({id:hlRow?.id,user_id:st.userId,entry_type:'earned_habit',points:habit.points_per_completion,activity_date:date,habit_id:hid,habits:{name:habit.name}});
     }
     toast('+'+( habit?.points_per_completion||1)+' '+pname(),'✷');
   } else {
@@ -1193,8 +1196,9 @@ async function completeGoal(gid) {
   const r=gl.rewards;
   if(r){
     if(r.chance_pct>=100){
-      await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_goal',points:parseFloat(r.point_value),activity_date:todayStr(),goal_id:gid,reward_id:gl.reward_id});
-      st.ledger.unshift({user_id:st.userId,entry_type:'earned_goal',points:r.point_value,activity_date:todayStr(),rewards:{name:r.name}});
+      const glRes=await sb.ins('point_ledger',{project_id:st.activeProjectId,user_id:st.userId,entry_type:'earned_goal',points:parseFloat(r.point_value),activity_date:todayStr(),goal_id:gid,reward_id:gl.reward_id});
+      const glRow=Array.isArray(glRes)?glRes[0]:glRes;
+      st.ledger.unshift({id:glRow?.id,user_id:st.userId,entry_type:'earned_goal',points:r.point_value,activity_date:todayStr(),rewards:{name:r.name}});
       toast('Goal done! +'+r.point_value+' '+pname(),'🎯');
     } else {
       await sb.ins('raffle_tickets',{project_id:st.activeProjectId,user_id:st.userId,reward_id:gl.reward_id,goal_id:gid});
@@ -1662,10 +1666,15 @@ function renderHistory(){
 async function deleteHistoryEntry(id) {
   if(!confirm('Delete this entry?'))return;
   await sb.del('point_ledger','id=eq.'+id+'&user_id=eq.'+st.userId);
-  st.ledger=st.ledger.filter(e=>e.id!==id);
+  const fresh=await sb.q('point_ledger',{
+    select:'id,user_id,entry_type,points,activity_date,habit_id,goal_id,reward_id,note,created_at,habits(name),rewards(name)',
+    filter:'project_id=eq.'+st.activeProjectId, order:'created_at.desc'
+  });
+  if(Array.isArray(fresh)) st.ledger=fresh;
   renderHistory();
-  g('today-bal').textContent=fmt(ledgerStats().myBal);
-  g('party-bal').textContent=fmt(ledgerStats().myBal);
+  const bal=fmt(ledgerStats().myBal);
+  g('today-bal').textContent=bal;
+  g('party-bal').textContent=bal;
   renderStats();
   toast('Entry deleted','🗑︎');
 }
